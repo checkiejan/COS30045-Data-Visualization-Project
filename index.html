@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="img\logo\Garcia Tavern-logos.jpeg" />
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="script/map.js"></script>
+   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Migration</title>
 </head>
@@ -38,16 +39,29 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi similique repellat ex, atque iste id praesentium cupiditate nostrum ab culpa quaerat ratione vitae beatae quas odit aut, quo assumenda voluptatum.</p>    
         </div>
     </div>
-    <div id = "geomap">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel aliquid repellendus explicabo enim incidunt, harum ipsum possimus consequatur voluptates veritatis doloribus eos! Perspiciatis error sapiente officia ipsum labore consectetur expedita?</p>
-        <select class = "select-data">
-            <option selected>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+    <div class = "visualisation container-fluid" style="--bs-columns: 10; --bs-gap: 1rem;">
+        <p class = "brief-vis row">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel aliquid repellendus explicabo enim incidunt, harum ipsum possimus consequatur voluptates veritatis doloribus eos! Perspiciatis error sapiente officia ipsum labore consectetur expedita?</p>
+        <select class = "select-map">
+            <option value ="arrive" selected>Arrival</option>
+            <option value ="departure" >Departure</option>
+            <option value ="total">Total</option>
         </select>
+        <div class="row">
+            <div class="map col">
+                
+            </div>
+            <div class="col">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At iusto quia necessitatibus, illo cumque neque distinctio, earum in qui excepturi sequi amet facere porro aperiam. Natus deserunt praesentium maxime obcaecati!</p>
+            </div>
+        </div>
+        <section id="timeline" class="row align-items-center height-cap">
+            <button onclick="timelineButtonUpdate()" id="plause" class="col-auto p-0 px-2 m-0"><i class="bi bi-play-fill"></i></button>
+            <p class="col-auto py-0 px-2 m-0 leftBorder">1966</p>
+            <input oninput="timelineUpdate()" onchange="primaryChartUpdate()" type="range" name="year" id="year" class="col p-0 m-0" min="1966" max="2020" value="2020">
+            <p class="col-auto py-0 px-2 m-0 rightBorder">2020</p>
+            <p id="yearLabel" class="col-auto py-0 px-3 m-0">2020</p>
+          </section>
     </div>
-    <div>
-
-    </div>
+   
+    <script src="script/button.js"></script>
 </body>

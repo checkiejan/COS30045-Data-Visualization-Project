@@ -2,56 +2,33 @@
 function initializeMap(){ // initialize the choropleth
     var w = 600;
     var h = 400;
-    var zoom = d3.zoom().scaleExtent([1, 1.8])
-            .translateExtent([[-500, -300], [1500, 700]]).on('zoom', handleZoom);
-    function handleZoom(e) {
-        d3.select('.map svg')
-            .attr('transform', e.transform);
-        
-    }
-    function resetZoom() {
-        d3.select('.map svg')
-                .transition()
-                .duration(500)    
-                .call(zoom.scaleTo, 1);
-        return;
-    }
-    function centerZoom() {
-        d3.select('.map svg')  
-        .transition()
-        .duration(700)     
-        .call(zoom.translateTo, 0.5 * w , 0.5 * h )
-        ;
-        console.log("tt");
-       
-    }
-    var svg = d3.select(".map")
+
+    var svg = d3.select("#geomap")
                 .append("svg")
                 .attr("width",w)
                 .attr("height",h)
                 .attr("viewBox", [0, 0, w, h])
-                .call(zoom)
+                .call(d3.zoom().on("zoom", function () {
+                    svg.attr("transform", d3.zoomTransform(this))
+                  }))
                 .attr("fill","grey");
+    g = svg.append("g");
    
-    
-    svg.on("mouseleave", function(){
-              centerZoom();
-            }) 
     drawMap("2021","arrive", true);
 }  
 
 function drawMap(year,type,initialize = false) //update the choropleth
 {   
     
-    var w = 600;
-    var h = 400;
+    var w = 700;
+    var h = 500;
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w/2 ,h/2 + 50]) // move to the center
-                    .scale(500);
+                    .translate([w/2 + 100,h/2+100]) // move to the center
+                    .scale(600);
     var path = d3.geoPath()
                 .projection(projection); //project 
-    var svg = d3.select(".map").select("svg"); 
+    var svg = d3.select("#geomap").select("g"); 
     
     d3.csv(`../data/state_${type}.csv`).then(function(data){ //combine data from csv with json
         data.forEach(function(d) {
@@ -168,6 +145,8 @@ function drawMap(year,type,initialize = false) //update the choropleth
                         .style("stroke-width", ".2")
                         .style("stroke", "black")
                 })
+
+              
     })
     })
 }

@@ -211,14 +211,31 @@ body{
     margin-bottom: 20px;
 }
 
-
-#geomap{
+.row{
     text-align: center;
 }
+.visualisation{
+    margin: 30px;
+}
 
-.select-data{
+.brief-vis{
+    text-align: center;
+}
+.map{
+    overflow: hidden;
+}
+.select-map{
     float: right;
     position: relative;
     top: 50%;
     transform: translate(-20%,60%);
 }
+
+.border-svg {
+    border: 1px solid darkgray;
+}
+.select-map svg{
+    overflow: hidden;
+    stroke:black;
+}
+
