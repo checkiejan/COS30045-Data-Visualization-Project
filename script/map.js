@@ -53,7 +53,7 @@ function drawMap(year,type,initialize = false) //update the choropleth
                 .projection(projection); //project 
     var svg = d3.select(".map").select("svg"); 
     
-    d3.csv(`../data/state_${type.toLowerCase()}.csv`).then(function(data){ //combine data from csv with json
+    d3.csv(`./data/state_${type.toLowerCase()}.csv`).then(function(data){ //combine data from csv with json
         data.forEach(function(d) {
             d.State = d.State;
             for(var i = 2004; i <=2021; i++ )
