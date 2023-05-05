@@ -28,10 +28,10 @@ function drawLine(state,type,initialize = false)
     title = document.querySelector(".title-line")
     
     if(type == "Arrival"){
-        title.innerText = `Total Arrival to ${state} in 2021`;
+        title.innerText = `Total Arrival to ${state} from 2004 to 2021`;
     }
     else{
-        title.innerText = `Total Departure from ${state} in 2021`;
+        title.innerText = `Total Departure from ${state} from 2004 to 2021`;
     }
     d3.csv(`./datasets/state_${type.toLowerCase()}.csv`).then(function(data){
         data.forEach(function(d) {
