@@ -33,7 +33,7 @@ function drawLine(state,type,initialize = false)
     else{
         title.innerText = `Total Departure from ${state} in 2021`;
     }
-    d3.csv(`./data/state_${type.toLowerCase()}.csv`).then(function(data){
+    d3.csv(`./datasets/state_${type.toLowerCase()}.csv`).then(function(data){
         data.forEach(function(d) {
             d.State = d.State;
             for(var i = 2004; i <=2021; i++ )
