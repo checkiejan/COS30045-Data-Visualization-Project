@@ -1,6 +1,7 @@
 //Total,341410,376540,437430,501350,519760,437920,431770,467330,482090,464670,465260,489280,540140,527450,550350,506810,145970,394890
 function initializeMap(){ // initialize the choropleth
     var w = document.querySelector('.map').offsetWidth;
+    w = 600;
     var h = 400;
     var zoom = d3.zoom().scaleExtent([1, 1.4])
             .translateExtent([[-200, -300], [1000, 700]]).on('zoom', handleZoom);
@@ -44,10 +45,11 @@ function drawMap(year,type,initialize = false) //update the choropleth
 {   
     
     var w = document.querySelector('.map').offsetWidth;
+    w = 600;
     var h = 400;
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w/2  + 120,h/2 + 50]) // move to the center
+                    .translate([w/2  + 120,h/2 + 70]) // move to the center
                     .scale(500);
     var path = d3.geoPath()
                 .projection(projection); //project 

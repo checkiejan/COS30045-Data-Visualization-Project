@@ -211,6 +211,7 @@ body{
     margin-bottom: 20px;
 }
 
+
 .chart{
     text-align: center;
 }
@@ -220,6 +221,8 @@ body{
 
 .brief-vis{
     text-align: center;
+    margin: auto;
+    width: 70%;
 }
 h3{
     margin-left: 30px;
