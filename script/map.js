@@ -1,9 +1,9 @@
 //Total,341410,376540,437430,501350,519760,437920,431770,467330,482090,464670,465260,489280,540140,527450,550350,506810,145970,394890
 function initializeMap(){ // initialize the choropleth
-    var w = 600;
+    var w = document.querySelector('.map').offsetWidth;
     var h = 400;
-    var zoom = d3.zoom().scaleExtent([1, 1.8])
-            .translateExtent([[-500, -300], [1500, 700]]).on('zoom', handleZoom);
+    var zoom = d3.zoom().scaleExtent([1, 1.4])
+            .translateExtent([[-200, -300], [1000, 700]]).on('zoom', handleZoom);
     function handleZoom(e) {
         d3.select('.map svg')
             .attr('transform', e.transform);
@@ -20,16 +20,16 @@ function initializeMap(){ // initialize the choropleth
         d3.select('.map svg')  
         .transition()
         .duration(700)     
-        .call(zoom.translateTo, 0.5 * w , 0.5 * h )
+        .call(zoom.translateTo, 0.5 * w, 0.5 * h )
         ;
-        console.log("tt");
+       
        
     }
     var svg = d3.select(".map")
                 .append("svg")
                 .attr("width",w)
                 .attr("height",h)
-                .attr("viewBox", [0, 0, w, h])
+                .attr("viewBox", [0, 0, w , h])
                 .call(zoom)
                 .attr("fill","grey");
    
@@ -37,23 +37,23 @@ function initializeMap(){ // initialize the choropleth
     svg.on("mouseleave", function(){
               centerZoom();
             }) 
-    drawMap("2021","arrive", true);
+    drawMap("2021","Arrival", true);
 }  
 
 function drawMap(year,type,initialize = false) //update the choropleth
 {   
     
-    var w = 600;
+    var w = document.querySelector('.map').offsetWidth;
     var h = 400;
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w/2 ,h/2 + 50]) // move to the center
+                    .translate([w/2  + 120,h/2 + 50]) // move to the center
                     .scale(500);
     var path = d3.geoPath()
                 .projection(projection); //project 
     var svg = d3.select(".map").select("svg"); 
     
-    d3.csv(`../data/state_${type}.csv`).then(function(data){ //combine data from csv with json
+    d3.csv(`../data/state_${type.toLowerCase()}.csv`).then(function(data){ //combine data from csv with json
         data.forEach(function(d) {
             d.State = d.State;
             for(var i = 2004; i <=2021; i++ )
@@ -65,9 +65,10 @@ function drawMap(year,type,initialize = false) //update the choropleth
         
         var color = d3.scaleLinear()
                 .domain([100,150000])
-                .range(d3.schemeBlues[3]);
+                .range(["#F6F1F1","#AFD3E2","19A7CE","146C94"])
+                //.range(d3.schemeBlues[5]);
 
-        console.log(d3.min(data, function(d){return d[year]}),d3.max(data, function(d){return d[year]}))
+       
         d3.json("https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson").then(function(json){ //use json to to get coordinates of the map
 //.properties.STATE_NAME
             
@@ -95,6 +96,7 @@ function drawMap(year,type,initialize = false) //update the choropleth
                     .attr("d", path)
                     .style("stroke-width", ".3")
                     .style("stroke", "black")
+                    .style("opacity", 1.5)
                     .attr("class", function(d){ return "state" } )
 
                     .attr("fill", (d)=>{
@@ -103,15 +105,7 @@ function drawMap(year,type,initialize = false) //update the choropleth
                         return color(value);
                     })
                     .append("title").text((d) => {
-                        var temp
-                        if(type == "arrive"){
-                            temp = "Arrival";
-                        }
-                        else if(type == "departure")
-                        {
-                            temp = "Departure";
-                        }
-                       return `State: ${d.properties.STATE_NAME}\n${temp}: ${d.properties.value}`
+                       return `State: ${d.properties.STATE_NAME}\n${type}: ${d.properties.value}`
                        
                     });
             }
@@ -121,53 +115,76 @@ function drawMap(year,type,initialize = false) //update the choropleth
                         .transition()
                         .ease(d3.easePoly)
                         .duration(1000)
+                        .style("opacity", 1.5)
                         .attr("fill", (d)=>{
                             
                             var value = d.properties.value;
-                            console.log(color(value));
+                           
                             return color(value);
                         });
                 svg.selectAll("title")
                     .data(json.features)
                     .text((d) => {
-                        var temp;
-                        if(type == "arrive"){
-                            temp = "Arrival";
-                        }
-                        else if(type == "departure")
-                        {
-                            temp = "Departure";
-                            console.log(temp);
-                        }
-                       
-                       return `State: ${d.properties.STATE_NAME}\n${temp}: ${d.properties.value}`
-                       
+                       return `State: ${d.properties.STATE_NAME}\n${type}: ${d.properties.value}`
                     });
                         
             }
             svg.selectAll("path")
                 .data(json.features)
                 .on("mouseover",function(event,d){
-                    d3.selectAll(".state")
-                          .transition()
-                          .duration(200)
-                          .style("stroke-width", "0.1")
-                          .style("opacity", .5);
-                    d3.select(this)
-                          .transition()
-                          .duration(200)
-                          .style("opacity", 1.4)
-                          .style("stroke-width", "1")
-                          .style("stroke", "black");
+                   focus(this);                  
                 })
                 .on("mouseleave", function(){
-                    d3.selectAll(".state")
-                        .transition()
-                        .duration(500)
-                        .style("opacity", 2.)
-                        .style("stroke-width", ".2")
-                        .style("stroke", "black")
+                    if( !d3.select(this).classed("clicked") &&  !svg.classed("clicked-svg"))
+                    {
+                        defocus();
+                    }
+                    if(!d3.select(this).classed("clicked") &&  svg.classed("clicked-svg"))
+                    {
+                        var object= d3.select(".state .clicked");
+                        focus(".clicked");
+                    }
+                })
+                .on("click", function(event,d){
+                    if(!d3.select(this).classed("clicked"))
+                    {
+                        svg.classed("clicked-svg",true)
+                        d3.selectAll(".state").classed("clicked",false)
+                        d3.select(this).classed("clicked",true);
+                        focus(this);
+                        var selectMap = document.querySelector('.select-map').value;
+                        drawLine(d.properties.STATE_NAME,type);
+                    }
+                    else{
+                        svg.classed("clicked-svg",false)
+                        d3.select(this).classed("clicked",false);
+                        defocus();
+                        drawLine("Australia",type);
+                    }
                 })
     })
     })
+}
+
+function focus(object){
+    d3.selectAll(".state")
+        .transition()
+        .duration(200)
+        .style("stroke-width", "0.1")
+        .style("opacity", 0.9);
+    d3.select(object)
+        .transition()
+        .duration(200)
+        .style("opacity", 2)
+        .style("stroke-width", "1")
+        .style("stroke", "black");
+}
+
+function defocus(){
+    d3.selectAll(".state")
+        .transition()
+        .duration(500)
+        .style("opacity", 1.5)
+        .style("stroke-width", ".2")
+        .style("stroke", "black");
 }
