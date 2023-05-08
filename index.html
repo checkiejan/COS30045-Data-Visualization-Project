@@ -7,7 +7,9 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="script/map.js"></script>
     <script src="script/line.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <title>Migration</title>
 </head>
 <body>
@@ -60,12 +62,12 @@
         </div>
         </div>
         <section id="timeline" class="row align-items-center height-cap">
-            <button onclick="timelineButtonUpdate()" id="plause" class="col-auto p-0 px-2 m-0"><i class="bi bi-play-fill"></i></button>
+            <button onclick="timelineButtonUpdate()"  class="col-auto p-0 px-2 m-0  "><span class="bi bi-play-fill"></span></button>
             <p class="col-auto py-0 px-2 m-0 leftBorder">1966</p>
             <input oninput="timelineUpdate()" onchange="primaryChartUpdate()" type="range" name="year" id="year" class="col p-0 m-0" min="1966" max="2020" value="2020">
             <p class="col-auto py-0 px-2 m-0 rightBorder">2020</p>
             <p id="yearLabel" class="col-auto py-0 px-3 m-0">2020</p>
-          </section>
+        </section>
     </div>
    
     <script src="script/main.js"></script>
