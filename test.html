@@ -1,20 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <title>Document</title>
-</head>
+<html>
 <body>
-    <div class="grid container-fluid" style="--bs-columns: 10; --bs-gap: 1rem;">
-        <div class="g-col-6">.g-col-6</div>
-        <div class="g-col-4">.g-col-4</div>
-        <span id="boot-icon" class="bi bi-play" style="font-size: 44px;"></span>
-        <button onclick="timelineButtonUpdate()"  class="col-auto p-0 px-2 m-0"><span class="bi bi-play-fill"></span></button>
-      </div>
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div id="sankey_multiple" style="width: 900px; height: 300px;"></div>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["sankey"]});
+  google.charts.setOnLoadCallback(drawChart);
+   function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'From');
+    data.addColumn('string', 'To');
+    data.addColumn('number', 'Weight');
+    data.addRows([
+       [ 'Brazil', 'Portugal', 5 ],
+       [ 'Brazil', 'France', 1 ],
+       [ 'Brazil', 'Spain', 1 ],
+       [ 'Brazil', 'England', 1 ],
+       [ 'Canada', 'Portugal', 1 ],
+       [ 'Canada', 'France', 5 ],
+       [ 'Canada', 'England', 1 ],
+       [ 'Mexico', 'Portugal', 1 ],
+       [ 'Mexico', 'France', 1 ],
+       [ 'Mexico', 'Spain', 5 ],
+       [ 'Mexico', 'England', 1 ],
+       [ 'USA', 'Portugal', 1 ],
+       [ 'USA', 'France', 1 ],
+       [ 'USA', 'Spain', 1 ],
+       [ 'USA', 'England', 5 ],
+       [ 'Portugal', 'Angola', 2 ],
+       [ 'Portugal', 'Senegal', 1 ],
+       [ 'Portugal', 'Morocco', 1 ],
+       [ 'Portugal', 'South Africa', 3 ],
+       [ 'France', 'Angola', 1 ],
+       [ 'France', 'Senegal', 3 ],
+       [ 'France', 'Mali', 3 ],
+       [ 'France', 'Morocco', 3 ],
+       [ 'France', 'South Africa', 1 ],
+       [ 'Spain', 'Senegal', 1 ],
+       [ 'Spain', 'Morocco', 3 ],
+       [ 'Spain', 'South Africa', 1 ],
+       [ 'England', 'Angola', 1 ],
+       [ 'England', 'Senegal', 1 ],
+       [ 'England', 'Morocco', 2 ],
+       [ 'England', 'South Africa', 7 ],
+       [ 'South Africa', 'China', 5 ],
+       [ 'South Africa', 'India', 1 ],
+       [ 'South Africa', 'Japan', 3 ],
+       [ 'Angola', 'China', 5 ],
+       [ 'Angola', 'India', 1 ],
+       [ 'Angola', 'Japan', 3 ],
+       [ 'Senegal', 'China', 5 ],
+       [ 'Senegal', 'India', 1 ],
+       [ 'Senegal', 'Japan', 3 ],
+       [ 'Mali', 'China', 5 ],
+       [ 'Mali', 'India', 1 ],
+       [ 'Mali', 'Japan', 3 ],
+       [ 'Morocco', 'China', 5 ],
+       [ 'Morocco', 'India', 1 ],
+       [ 'Morocco', 'Japan', 3 ]
+    ]);
+
+    // Set chart options
+    var options = {
+      width: 600,
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple'));
+    chart.draw(data, options);
+   }
+</script>
 </body>
 </html>
