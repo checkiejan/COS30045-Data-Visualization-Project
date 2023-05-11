@@ -39,11 +39,11 @@ function timelineUpdate(){
 }
 function firstChartUpdate(){
     timelineUpdate();
-    method = document.querySelector(".title-line").innerText.split(" ");
+    method = document.querySelector('.select-map').value
     year = document.querySelector("#year");
     mapTitle = document.querySelector(".title-map");
-    mapTitle.innerText = `${year.value} ${method[1]} in Australia`;
-    drawMap( document.querySelector("#year").value,method[1]);
+    mapTitle.innerText = `${year.value} ${method} in Australia`;
+    drawMap( year.value,method);
 }
 function init(){
     var selectMap = document.querySelector('.select-map');
@@ -80,6 +80,7 @@ function init(){
        
     }
     initializeMap();
-    initiliazeLine();
+    // initiliazeLine();
+    initialiseBar();
 }
 window.onload = init();

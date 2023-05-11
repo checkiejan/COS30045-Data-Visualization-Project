@@ -34,6 +34,7 @@ function drawLine(state,type,initialize = false)
         title.innerText = `Total Departure from ${state} from 2004 to 2021`;
     }
     d3.csv(`./datasets/state_${type.toLowerCase()}.csv`).then(function(data){
+        console.log(data.length);
         data.forEach(function(d) {
             d.State = d.State;
             for(var i = 2004; i <=2021; i++ )

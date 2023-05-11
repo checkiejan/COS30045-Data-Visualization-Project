@@ -159,13 +159,13 @@ function drawMap(year,type,initialize = false) //update the choropleth
                         d3.select(this).classed("clicked",true);
                         focus(this);
                         var selectMap = document.querySelector('.select-map').value;
-                        drawLine(d.properties.STATE_NAME,type);
+                        drawBar(d.properties.STATE_NAME);
                     }
                     else{
                         svg.classed("clicked-svg",false)
                         d3.select(this).classed("clicked",false);
                         defocus();
-                        drawLine("Australia",type);
+                        drawBar("Australia");
                     }
                 })
     })

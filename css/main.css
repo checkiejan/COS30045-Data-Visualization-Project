@@ -244,4 +244,10 @@ h3{
     overflow: hidden;
     stroke:black;
 }
+.line{
+    fill: none;
+    stroke: rgb(25, 23, 24);
+    stroke-width: 0.8;
+    /* stroke-dasharray: 5; */
+}
 
