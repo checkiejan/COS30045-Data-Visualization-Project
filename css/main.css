@@ -251,3 +251,11 @@ h3{
     /* stroke-dasharray: 5; */
 }
 
+.title-bar{
+    min-height: 20%;
+}
+
+#timeline{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

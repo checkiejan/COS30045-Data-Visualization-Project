@@ -52,7 +52,6 @@ function init(){
         var title = document.querySelector('.title-map');
         title.innerText = `2021 ${inputText} in Australia`;
         drawMap("2021",inputText);
-        title = document.querySelector(".title-line").innerText.split(" ");
         var flag = true;
         if(title[3] == "New")
         {

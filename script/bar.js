@@ -94,7 +94,10 @@ function drawBar(state,initialize = false)
             var max = d3.max(arrive,function(d) {return d;});
             var lst = []
             for(let i =-2; i <=4; i++){
-                lst.push((max/4)*i);
+                if(i!=0)
+                {
+                    lst.push((max/4)*i);
+                }
                 svg.append("line") // line element
                     .attr("class","line halfMilMark")
                     .attr("x1",padding)
@@ -162,7 +165,7 @@ function drawBar(state,initialize = false)
             svg.append("rect")
                 .attr("class","legend-arrive")
                 .attr("x", 20)
-                .attr("y", h -20)
+                .attr("y", h -30)
                 .attr("width",20)
                 .attr("height",20)
                 .attr("fill",color_arrive);
@@ -170,20 +173,20 @@ function drawBar(state,initialize = false)
             svg.append("rect")
                 .attr("class","legend-depart")
                 .attr("x", 110)
-                .attr("y", h -20)
+                .attr("y", h -30)
                 .attr("width",20)
                 .attr("height",20)
                 .attr("fill",color_depart);
 
             svg.append("text")
                 .attr("x", 44)
-                .attr("y", h-5)
+                .attr("y", h-15)
                 .attr("font-weight",500)
                 .text("Arrival");
 
             svg.append("text")
                 .attr("x", 134)
-                .attr("y", h-5)
+                .attr("y", h-15)
                 .attr("font-weight",500)
                 .text("Departure");
            
@@ -205,6 +208,9 @@ function drawBar(state,initialize = false)
                     return h - yScale((max/4) *d) -h/2
                 } );
             for(let i =-2; i <=4; i++){
+                if(i == 0){
+                    continue;
+                }
                     lst.push((max/4)*i);
             }
             console.log(lst)
