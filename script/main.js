@@ -53,8 +53,6 @@ function sankeyUpdate(choice){
             d.classList.remove("active");
         })
         updateSankey(choice);
-    }
-    else{
         button.classList.add("active");
     }
     title = document.querySelector(".title-sankey");

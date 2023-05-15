@@ -128,7 +128,6 @@ function processData(data,year)
 
 
 function updateSankey(choice){
-    console.log(choice)
     var formatNumber = d3.format(",.0f"), // zero decimal places
     format = function(d) { return formatNumber(d); },
     color = d3.scaleOrdinal(d3.schemeCategory10);
