@@ -54,6 +54,9 @@ function sankeyUpdate(choice){
         })
         updateSankey(choice);
     }
+    else{
+        button.classList.add("active");
+    }
     title = document.querySelector(".title-sankey");
     year = "2016 to 2021";
     if(choice==1)
