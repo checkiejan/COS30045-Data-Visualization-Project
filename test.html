@@ -1,75 +1,128 @@
-<html>
-<body>
- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!DOCTYPE html>
+<meta charset="utf-8">
 
-<div id="sankey_multiple" style="width: 900px; height: 300px;"></div>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
 
-<script type="text/javascript">
-  google.charts.load("current", {packages:["sankey"]});
-  google.charts.setOnLoadCallback(drawChart);
-   function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'From');
-    data.addColumn('string', 'To');
-    data.addColumn('number', 'Weight');
-    data.addRows([
-       [ 'Brazil', 'Portugal', 5 ],
-       [ 'Brazil', 'France', 1 ],
-       [ 'Brazil', 'Spain', 1 ],
-       [ 'Brazil', 'England', 1 ],
-       [ 'Canada', 'Portugal', 1 ],
-       [ 'Canada', 'France', 5 ],
-       [ 'Canada', 'England', 1 ],
-       [ 'Mexico', 'Portugal', 1 ],
-       [ 'Mexico', 'France', 1 ],
-       [ 'Mexico', 'Spain', 5 ],
-       [ 'Mexico', 'England', 1 ],
-       [ 'USA', 'Portugal', 1 ],
-       [ 'USA', 'France', 1 ],
-       [ 'USA', 'Spain', 1 ],
-       [ 'USA', 'England', 5 ],
-       [ 'Portugal', 'Angola', 2 ],
-       [ 'Portugal', 'Senegal', 1 ],
-       [ 'Portugal', 'Morocco', 1 ],
-       [ 'Portugal', 'South Africa', 3 ],
-       [ 'France', 'Angola', 1 ],
-       [ 'France', 'Senegal', 3 ],
-       [ 'France', 'Mali', 3 ],
-       [ 'France', 'Morocco', 3 ],
-       [ 'France', 'South Africa', 1 ],
-       [ 'Spain', 'Senegal', 1 ],
-       [ 'Spain', 'Morocco', 3 ],
-       [ 'Spain', 'South Africa', 1 ],
-       [ 'England', 'Angola', 1 ],
-       [ 'England', 'Senegal', 1 ],
-       [ 'England', 'Morocco', 2 ],
-       [ 'England', 'South Africa', 7 ],
-       [ 'South Africa', 'China', 5 ],
-       [ 'South Africa', 'India', 1 ],
-       [ 'South Africa', 'Japan', 3 ],
-       [ 'Angola', 'China', 5 ],
-       [ 'Angola', 'India', 1 ],
-       [ 'Angola', 'Japan', 3 ],
-       [ 'Senegal', 'China', 5 ],
-       [ 'Senegal', 'India', 1 ],
-       [ 'Senegal', 'Japan', 3 ],
-       [ 'Mali', 'China', 5 ],
-       [ 'Mali', 'India', 1 ],
-       [ 'Mali', 'Japan', 3 ],
-       [ 'Morocco', 'China', 5 ],
-       [ 'Morocco', 'India', 1 ],
-       [ 'Morocco', 'Japan', 3 ]
-    ]);
+<!-- Load the sankey.js function -->
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/sankey.js"></script>
 
-    // Set chart options
-    var options = {
-      width: 600,
-    };
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.Sankey(document.getElementById('sankey_multiple'));
-    chart.draw(data, options);
-   }
-</script>
-</body>
-</html>
+<!-- Add style to links or they won't appear properly-->
+<style>
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
+.link:hover {
+  stroke-opacity: .5;
+}
+</style>
+
+<script>
+
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+      width = 450 - margin.left - margin.right,
+      height = 480 - margin.top - margin.bottom;
+  
+  // append the svg object to the body of the page
+  var svg = d3.select("#my_dataviz").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+  
+  // Color scale used
+  var color = d3.scaleOrdinal(d3.schemeCategory20);
+  
+  // Set the sankey diagram properties
+  var sankey = d3.sankey()
+      .nodeWidth(36)
+      .nodePadding(290)
+      .size([width, height]);
+  
+  // load the data
+  d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_sankey.json", function(error, graph) {
+  
+    // Constructs a new Sankey generator with the default settings.
+    
+    sankey.nodes(graph.nodes)
+        .links(graph.links)
+        .layout(1);
+    console.log(graph);
+    // add in the links
+    var link = svg.append("g")
+      .selectAll(".link")
+      .data(graph.links)
+      .enter()
+      .append("path")
+        .attr("class", "link")
+        .attr("d", sankey.link() )
+        .style("stroke-width", function(d) { return Math.max(1, d.dy); })
+        .sort(function(a, b) { return b.dy - a.dy; })
+        .append("title")
+          .text(function(d) {console.log(d); return `from ${d.source.name} to ${d.target.name}\nvalue: ${d.value}`; });;
+
+        
+        
+        
+    
+  
+    // add in the nodes
+    var node = svg.append("g")
+      .selectAll(".node")
+      .data(graph.nodes)
+      .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+        .call(d3.drag()
+          .subject(function(d) { return d; })
+          .on("start", function() { this.parentNode.appendChild(this); })
+          .on("drag", dragmove));
+  
+    // add the rectangles for the nodes
+    node
+      .append("rect")
+        .attr("height", function(d) { return d.dy; })
+        .attr("width", sankey.nodeWidth())
+        .style("fill", function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
+        .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+      // Add hover text
+      .append("title")
+        .text(function(d) { return d.name + "\n" + "There is " + d.value + " stuff in this node"; });
+  
+    // add in the title for the nodes
+      node
+        .append("text")
+          .attr("x", -6)
+          .attr("y", function(d) { return d.dy / 2; })
+          .attr("dy", ".35em")
+          .attr("text-anchor", "end")
+          .attr("transform", null)
+          .text(function(d) { return d.name; })
+        .filter(function(d) { return d.x < width / 2; })
+          .attr("x", 6 + sankey.nodeWidth())
+          .attr("text-anchor", "start");
+  
+    // the function for moving the nodes
+    function dragmove(d) {
+      d3.select(this)
+        .attr("transform",
+              "translate("
+                 + d.x + ","
+                 + (d.y = Math.max(
+                    0, Math.min(height - d.dy, d3.event.y))
+                   ) + ")");
+      sankey.relayout();
+      link.attr("d", sankey.link() );
+    }
+  
+  });
+  
+  
+  </script>

@@ -8,6 +8,8 @@
     <script src="script/map.js"></script>
     <script src="script/line.js"></script>
     <script src="script/bar.js"></script>
+    <script src="script/sankeyChart.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
@@ -73,12 +75,19 @@
 
     <div class = "visualisation container-fluid" style="--bs-columns: 10; --bs-gap: 1rem;">
         <p class = "brief-vis ">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel aliquid repellendus explicabo enim incidunt, harum ipsum possimus consequatur voluptates veritatis doloribus eos! Perspiciatis error sapiente officia ipsum labore consectetur expedita?</p>
-        <div class = "col chart">
-            <h3 class = "title-sankey">2021 Arrival in Australia</h3>
-            <div class="sankey">
+        <div class = "row chart">
+            <h3 class = "title-sankey">Top 10 countries migration to Australia from 2004 to 2009</h3>
+            <div class="sankey-chart">
                 
             </div>
         </div>
+        
+        <div id="buttons" class="row ">
+        
+            <button type="button" onclick="sankeyUpdate(1)" class="sankey-1 sankey-btn btn btn-outline-secondary col active">2004 - 2009</button>
+            <button type="button" onclick="sankeyUpdate(2)" class="sankey-2 sankey-btn col btn btn-outline-secondary">2010 - 2015</button>
+            <button type="button" onclick="sankeyUpdate(3)" class="sankey-3 sankey-btn col btn btn-outline-secondary">2016 - 2021</button>
+          </div>
     </div>
    
     <script src="script/main.js"></script>

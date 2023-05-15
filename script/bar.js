@@ -21,8 +21,8 @@ function initialiseBar()
 // }
 function drawBar(state,initialize = false)
 {
-    var color_arrive = "#9E4784";
-    var color_depart = "red";
+    var color_arrive = "#2FC4B2";
+    var color_depart = "#E14D2A";
     var w = 600;
     var h = 400;
     var padding = 70; //padding
@@ -96,7 +96,7 @@ function drawBar(state,initialize = false)
             for(let i =-2; i <=4; i++){
                 if(i!=0)
                 {
-                    lst.push((max/4)*i);
+                    lst.push(Math.round((max/4)*i));
                 }
                 svg.append("line") // line element
                     .attr("class","line halfMilMark")
@@ -105,7 +105,6 @@ function drawBar(state,initialize = false)
                     .attr("x2",w + padding) // push to the right
                     .attr("y2", h - yScale((max/4)*i) -h/2 );
             }
-            console.log(lst)
             svg.selectAll("text")
                 .data(lst)
                 .enter()
@@ -141,7 +140,6 @@ function drawBar(state,initialize = false)
                 });
                 
 
-            console.log(depart); 
             for(let i =0 ; i< depart.length; i++){
                 var rect = svg.append("rect")
                             .attr("class", "depart");
@@ -224,7 +222,7 @@ function drawBar(state,initialize = false)
                     return h - yScale(d) -h/2 ;
                 })
                 .text((d)=>{
-                    return d;
+                    return Math.round(d);
                 })
             
             svg.selectAll("rect")

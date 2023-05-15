@@ -70,9 +70,9 @@ function drawMap(year,type,initialize = false) //update the choropleth
         });
         
         var color = d3.scaleLinear()
-                .domain([100,150000])
-                .range(["#F6F1F1","#AFD3E2","19A7CE","146C94"])
-                //.range(d3.schemeBlues[5]);
+                .domain([2000,10000,30000,50000,70000,100000,150000,200000])
+                //.range(["#219175","#BED83D","#FFE433","#FF9233","#EC5F68"])
+                .range(d3.schemeBlues[7]);
 
        
         d3.json("https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson").then(function(json){ //use json to to get coordinates of the map

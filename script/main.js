@@ -21,7 +21,7 @@ function timelinePlay(){
             setTimeout(function() { loopTimeout(i, max, interval, func) }, interval);
         };
 
-        loopTimeout(parseInt(year.value), 2021, 1000, (yearVal) => {
+        loopTimeout(parseInt(year.value), 2021, 1200, (yearVal) => {
             year.value = yearVal;
             firstChartUpdate();
           });
@@ -44,6 +44,27 @@ function firstChartUpdate(){
     mapTitle = document.querySelector(".title-map");
     mapTitle.innerText = `${year.value} ${method} in Australia`;
     drawMap( year.value,method);
+}
+function sankeyUpdate(choice){
+    button = document.querySelector(`.sankey-${choice}`);
+    if(!button.classList.contains("active")){
+        buttons = document.querySelectorAll(".sankey-btn");
+        buttons.forEach(function(d){
+            d.classList.remove("active");
+        })
+        updateSankey(choice);
+    }
+    title = document.querySelector(".title-sankey");
+    year = "2016 to 2021";
+    if(choice==1)
+    {
+        year = "2004 to 2009";
+    }
+    else if(choice == 2)
+    {
+        year = "2010 to 2015"
+    }
+    title.innerText = `Top 10 countries migration to Australia from ${year}`;
 }
 function init(){
     var selectMap = document.querySelector('.select-map');
@@ -81,5 +102,6 @@ function init(){
     initializeMap();
     // initiliazeLine();
     initialiseBar();
+    initialiseSankey();
 }
 window.onload = init();
