@@ -49,6 +49,7 @@ function drawLine(state,type,initialize = false)
                 temp = data[i];
             }
         }
+        console.log(temp)
         var result = [];
         for (const [key, value] of Object.entries(temp)) {
             if(typeof value == 'number'){
@@ -56,6 +57,7 @@ function drawLine(state,type,initialize = false)
             }
         }
         dataset = Object.entries(temp).slice(0,18);
+        console.log(dataset);
         yScale.domain([0,d3.max(result,function(d) {return d;})])
         line = d3.line()
                 .x(function(d) {return xScale(d[0]) + padding; }) // add padding to the x-coord to push it to the right
