@@ -177,12 +177,12 @@ function focus(object){
         .transition()
         .duration(200)
         .style("stroke-width", "0.1")
-        .style("opacity", 0.9);
+        .style("opacity", 0.5);
     d3.select(object)
         .transition()
         .duration(200)
         .style("opacity", 2)
-        .style("stroke-width", "1")
+        .style("stroke-width", "1.5")
         .style("stroke", "black");
 }
 

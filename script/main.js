@@ -52,7 +52,14 @@ function sankeyUpdate(choice){
         buttons.forEach(function(d){
             d.classList.remove("active");
         })
-        updateSankey(choice);
+        nodes =  document.querySelectorAll(`.node`);
+        if(nodes.length == 9 || nodes.length == 11)
+        {
+            restore(choice);
+        }
+        else{
+            updateSankey(choice);
+        }
         button.classList.add("active");
     }
     title = document.querySelector(".title-sankey");
@@ -66,6 +73,11 @@ function sankeyUpdate(choice){
         year = "2010 to 2015"
     }
     title.innerText = `Top 10 countries migration to Australia from ${year}`;
+    nodes =  document.querySelectorAll(`.node`);
+    if(nodes.length == 9 || nodes.length == 11)
+    {
+        restore(choice);
+    }
 }
 function init(){
     var selectMap = document.querySelector('.select-map');
@@ -101,7 +113,7 @@ function init(){
        
     }
     initializeMap();
-    // initiliazeLine();
+    initiliazeLine();
     initialiseBar();
     initialiseSankey();
 }
