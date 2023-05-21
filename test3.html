@@ -312,13 +312,13 @@
             })
             .on('mousemove', function () { // update tooltip content, line, circles and text when mouse moves
               var mouse = d3.mouse(this)
-
+              console.log(mouse)
               d3.selectAll(".mouse-per-line")
                 .attr("transform", function (d, i) {
                   var xDate = xScale.invert(mouse[0]) // use 'invert' to get date corresponding to distance from mouse position relative to svg
                   var bisect = d3.bisector(function (d) { return d.date; }).left // retrieve row index of date on parsed csv
                   var idx = bisect(d.values, xDate);
-
+                  
                   d3.select(".mouse-line")
                     .attr("d", function () {
                       var data = "M" + xScale(d.values[idx].date) + "," + (height);

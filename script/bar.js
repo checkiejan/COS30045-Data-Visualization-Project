@@ -87,29 +87,37 @@ function drawBar(state,initialize = false)
                     depart.push(value);
                 }
             }   
-
+            var axisPad = 6 
             yScale.domain([0,d3.max(arrive,function(d) {return d;})]); 
         dataset = Object.entries(temp).slice(0,18);
         if(initialize){
             var max = d3.max(arrive,function(d) {return d;});
             var lst = []
             for(let i =-2; i <=4; i++){
-                if(i!=0)
-                {
+               
                     lst.push(Math.round((max/4)*i));
-                }
+                
                 svg.append("line") // line element
                     .attr("class","line halfMilMark")
                     .attr("x1",padding)
                     .attr("y1", h - yScale((max/4)*i) -h/2 )
                     .attr("x2",w + padding) // push to the right
-                    .attr("y2", h - yScale((max/4)*i) -h/2 );
+                    .attr("y2", h - yScale((max/4)*i) -h/2 )
+                    .attr('stroke', '#A9A9A9')
+                    .attr('stroke-width', 1) // make horizontal tick thinner and lighter so that line paths can stand out
+                    .attr('opacity', 0.5);
             }
             svg.selectAll("text")
                 .data(lst)
                 .enter()
                 .append("text")
-                .attr("x", 0)
+                .attr("x", function(d){
+                    if(d ==0)
+                    {
+                        return 45;
+                    }
+                    return 0;
+                })
                 .attr("y", function(d){
                     return h - yScale(d) -h/2 ;
                 })
@@ -187,6 +195,12 @@ function drawBar(state,initialize = false)
                 .attr("y", h-15)
                 .attr("font-weight",500)
                 .text("Departure");
+
+            svg.append('text')
+                .attr('x', 0)
+                .attr("y", 30)
+                .text("People");
+    
            
         }
         else{
@@ -206,9 +220,7 @@ function drawBar(state,initialize = false)
                     return h - yScale((max/4) *d) -h/2
                 } );
             for(let i =-2; i <=4; i++){
-                if(i == 0){
-                    continue;
-                }
+               
                     lst.push((max/4)*i);
             }
             console.log(lst)
@@ -217,7 +229,13 @@ function drawBar(state,initialize = false)
                 .transition()
                 .ease(d3.easePoly)
                 .duration(1000)
-                .attr("x", 0)
+                .attr("x", function(d){
+                    if(d ==0)
+                    {
+                        return 45;
+                    }
+                    return 0;
+                })
                 .attr("y", function(d){
                     return h - yScale(d) -h/2 ;
                 })
