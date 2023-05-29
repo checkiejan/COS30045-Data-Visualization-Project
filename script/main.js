@@ -44,6 +44,7 @@ function firstChartUpdate(){ //update the choropleth
     mapTitle = document.querySelector(".title-map"); //update title
     mapTitle.innerText = `${year.value} ${method} in Australia`;
     drawMap( year.value,method); //re-draw the map
+    focusBar();
 }
 function sankeyUpdate(choice){ //update sankey chart based on the choice button
     button = document.querySelector(`.sankey-${choice}`);

@@ -156,7 +156,7 @@ function drawLine(state)
       tooltip = d3.select(".linechart").append("div") //tooltip of a div
                   .attr('id', 'tooltip')
                   .style('position', 'absolute')
-                  .style("background-color", "#D3D3D3")
+                  .style("background-color", "#F8EAD8")
                   .style('padding_line', 6)
                   .style('display', 'none');
 
@@ -261,7 +261,7 @@ function updateTooltip(dataset,tooltip,event,idx)
           .style('color', d => {
               return color(d.key)
           })
-          .style('opacity',5)
+          .style('opacity',7)
           .style('font-size', 10)
           .html(d => {
               

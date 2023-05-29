@@ -5,6 +5,32 @@ var format = function(d) { return formatNumber(d); };
 var w = 600;
 var h = 400;
 var padding = 70; 
+function focusBar() //to make a bar look outstanding
+{
+    var year = parseInt(document.querySelector("#year").value);
+    var index = year -2004; //get the order of the bar
+    console.log(index);
+    d3.selectAll(".barchart svg rect") //delete all style for other bars
+        .attr("style",null);
+    d3.selectAll(".barchart svg .depart") //focus on the needed bar
+                .transition()
+                .duration(500)
+                .attr("style", function(d,i){
+                if(i==index)
+                {
+                    return "outline: medium solid black;";
+                }
+            });
+    d3.selectAll(".barchart svg .arrive") //focus on the needed bar
+            .transition()
+            .duration(500)
+            .attr("style", function(d,i){
+            if(i==index)
+            {
+                return "outline: medium solid black;";
+            }
+        });
+}
 function initialiseBar()
 {
     var svg = d3.select(".barChart")
@@ -12,7 +38,11 @@ function initialiseBar()
                 .attr("width",w +100)
                 .attr("height",h + padding )
                 .attr("fill","grey");
+    
     drawBar("Australia");
+      
+    
+    
 }
 function drawBar(state)
 {
@@ -24,11 +54,6 @@ function drawBar(state)
     
     title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
 
-    var lst_year = []
-    for(let i =2004; i <=2021; i++)
-    {
-        lst_year.push(i)
-    }
 
     var xScale = d3.scaleBand() //xscale for the bar chart
         .domain(d3.range(2004,2022))
@@ -73,7 +98,7 @@ function drawBar(state)
                 lst.push(Math.round((max/4)*i)); //push to make line grid
                 
                 svg.append("line") // line element
-                    .attr("class","line halfMilMark")
+                    .attr("class","line ")
                     .attr("x1",padding)
                     .attr("y1", h - yScale((max/4)*i) -h/2 )
                     .attr("x2",w + padding) // push to the right
@@ -178,6 +203,8 @@ function drawBar(state)
             .attr("class", "xAxis")
             .attr("transform",`translate(${padding},${h-100})`)
             .call(xAxis);
+
+            focusBar();
         }
        
         )
@@ -295,6 +322,7 @@ function updateBar(state)
         }
         )
     })
+    
 }
 function extractState(state, data) //extract data based on a state
 {
@@ -312,3 +340,4 @@ function extractState(state, data) //extract data based on a state
     }   
     return result;
 }
+
