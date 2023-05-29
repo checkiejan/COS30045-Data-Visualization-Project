@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="img\logo\Garcia Tavern-logos.jpeg" />
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="script/map.js"></script>
-    <script src="script/line1.js"></script>
+    <script src="script/line.js"></script>
     <script src="script/bar.js"></script>
     <script src="script/sankeyChart.js"></script>
     <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
@@ -17,26 +17,6 @@
 </head>
 <body>
 
-    <!--  animated nav bar -->
-    <nav class="navbar">
-        <div class="navbar-container container">
-            <input type="checkbox" name="" id="">
-            <div class="hamburger-lines">
-                <span class="line line1"></span>
-                <span class="line line2"></span>
-                <span class="line line3"></span>
-            </div>
-            <ul class="menu-items">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Category</a></li>
-                <li><a href="#">Menu</a></li>
-                <li><a href="#">Testimonial</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-            <h1 class="logo">Navbar</h1>
-        </div>
-    </nav>
     
     <div class ="intro">
         <div >
@@ -92,8 +72,20 @@
 
     <div class = "visualisation container-fluid" style="--bs-columns: 10; --bs-gap: 1rem;">
         <p class = "brief-vis ">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel aliquid repellendus explicabo enim incidunt, harum ipsum possimus consequatur voluptates veritatis doloribus eos! Perspiciatis error sapiente officia ipsum labore consectetur expedita?</p>
+        <select class = "select-state">
+            <option value ="Australia">Australia</option>
+            <option value ="Australian Capital Territory">Australian Capital Territory</option>
+            <option value ="New South Wales">New South Wales</option>
+            <option value ="Northern Territory">Northern Territory</option>
+            <option value ="Queensland">Queensland</option>
+            <option value ="South Australia">South Australia</option>
+            <option value ="Tasmania">Tasmania</option>
+            <option value ="Victoria">Victoria</option>
+            <option value ="Western Australia">Western Australia</option>
+        </select>
         <div class = "row chart">
-            <h3 class = "title-line">Top 10 countries migration to Australia from 2004 to 2009</h3>
+            <h3 class = "title-line">Total Arrival to Australia based on types of visa holders from 2004 to 2009</h3>
+            
             <div class="linechart">
                 
             </div>

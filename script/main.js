@@ -1,8 +1,8 @@
-function timelinePlay(){
+function timelinePlay(){ //update when timeline is change
     playButton = document.querySelector(".play")
-    if (playButton.classList.contains("bi-play-fill")) {
+    if (playButton.classList.contains("bi-play-fill")) { //toggle the button
         playButton.classList.remove("bi-play-fill");
-        playButton.classList.add("bi-pause-fill");
+        playButton.classList.add("bi-pause-fill"); //change icon for play button 
 
         year = document.querySelector("#year");
         if (year.value == 2021) {
@@ -28,8 +28,8 @@ function timelinePlay(){
     } 
     else{
         playButton.classList.remove("bi-pause-fill");
-        playButton.classList.add("bi-play-fill");
-        let timeoutIDs = setTimeout(function() {}, 0);
+        playButton.classList.add("bi-play-fill"); //change icon for play button 
+        let timeoutIDs = setTimeout(function() {}, 0); //cancel all current running timeline
         while (timeoutIDs--) clearTimeout(timeoutIDs);
     }
 }
@@ -37,30 +37,23 @@ function timelineUpdate(){
     yearLabel = document.querySelector("#yearLabel");
     yearLabel.innerText = document.querySelector("#year").value;
 }
-function firstChartUpdate(){
+function firstChartUpdate(){ //update the choropleth
     timelineUpdate();
-    method = document.querySelector('.select-map').value
-    year = document.querySelector("#year");
-    mapTitle = document.querySelector(".title-map");
+    method = document.querySelector('.select-map').value //get the method
+    year = document.querySelector("#year"); //get the year selected
+    mapTitle = document.querySelector(".title-map"); //update title
     mapTitle.innerText = `${year.value} ${method} in Australia`;
-    drawMap( year.value,method);
+    drawMap( year.value,method); //re-draw the map
 }
-function sankeyUpdate(choice){
+function sankeyUpdate(choice){ //update sankey chart based on the choice button
     button = document.querySelector(`.sankey-${choice}`);
-    if(!button.classList.contains("active")){
+    if(!button.classList.contains("active")){ // only re-render the sankey chart if the button has not been selected
         buttons = document.querySelectorAll(".sankey-btn");
-        buttons.forEach(function(d){
+        buttons.forEach(function(d){ //de-active every other buttons
             d.classList.remove("active");
-        })
-        nodes =  document.querySelectorAll(`.node`);
-        if(nodes.length == 9 || nodes.length == 11)
-        {
-            restore(choice);
-        }
-        else{
-            updateSankey(choice);
-        }
-        button.classList.add("active");
+        })        
+        updateSankey(choice); //re draw snakey chart
+        button.classList.add("active"); //make the button active
     }
     title = document.querySelector(".title-sankey");
     year = "2016 to 2021";
@@ -72,45 +65,33 @@ function sankeyUpdate(choice){
     {
         year = "2010 to 2015"
     }
-    title.innerText = `Top 10 countries migration to Australia from ${year}`;
+    title.innerText = `Top 10 countries migration to Australia from ${year}`; //update title
     nodes =  document.querySelectorAll(`.node`);
-    if(nodes.length == 9 || nodes.length == 11)
+    if(nodes.length == 9 || nodes.length == 11) // if the user is focusing on a specific nodes
     {
-        restore(choice);
+        restore(choice); //restore the whole graph
     }
 }
+
+function LineChartUpdate(){ //update the line chart when user select different state
+    title = document.querySelector(".title-line");
+    state = document.querySelector('.select-state').value; 
+    title.innerText = `Total Arrival to ${state} based on types of visa holders from 2004 to 2021`; //update the new title
+    updateLine(state); //update the line chart
+}
+
 function init(){
-    var selectMap = document.querySelector('.select-map');
+    var selectState = document.querySelector('.select-state'); //add event lisenter to select dropdown of line chart
+    selectState.onchange = (event) => {
+        LineChartUpdate();
+    }
+    var selectMap = document.querySelector('.select-map');//add event lisenter to select dropdown of choropleth
     selectMap.onchange = (event) => {
         var inputText = event.target.value;
         var title = document.querySelector('.title-map');
-        title.innerText = `2021 ${inputText} in Australia`;
-        drawMap("2021",inputText);
-        var flag = true;
-        if(title[3] == "New")
-        {
-            flag = false;
-            drawLine( "New South Wales", inputText);
-        }
-        else if(title[3] == "Western")
-        {
-            flag = false;
-            drawLine( "Western Australia", inputText);
-        }
-        else if(title[3] == "Northern")
-        {
-            flag = false;
-            drawLine("Northern Territory", inputText);
-        }
-        else if(title[3] == "Australian")
-        {
-            flag = false;
-            drawLine( "Australian Capital Territory", inputText);
-        }
-        if(flag){
-            drawLine( title[3], inputText);
-        }
-       
+        var year= document.querySelector("#year").value;
+        title.innerText = `${year} ${inputText} in Australia`;
+        drawMap(`${year}`,inputText);
     }
     initializeMap();
     initiliazeLine();

@@ -1,19 +1,14 @@
+var margin = {top: 10, right: 10, bottom: 10, left: 10},
+width = 600 - margin.left - margin.right,
+padding = 100,
+height = 300 - margin.top - margin.bottom;
+var formatNumber = d3.format(",.0f"), // zero decimal places
+format = function(d) { return formatNumber(d); },
+color = d3.scaleOrdinal(d3.schemeCategory10);
+
 function initialiseSankey()
 {
-    // var w = 600;
-    // var h = 400;
-    // var padding = 60;
-    // var svg = d3.select(".sankey-chart")
-    //             .append("svg")
-    //             .attr("width",w +100)
-    //             .attr("height",h + padding )
-    //             .attr("fill","grey");
-
-    // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
-        padding = 100,
-        height = 300 - margin.top - margin.bottom;
+    
 
     // append the svg object to the body of the page
     var svg = d3.select(".sankey-chart").append("svg")
@@ -22,89 +17,131 @@ function initialiseSankey()
                 .append("g") .attr("class","t")
                 .attr("transform", 
                         `translate(${margin.left+100},${margin.right})`);
-    drawSankey(1,true);
+    drawSankey(1);
 }
-function drawSankey(choice,initialise = false)
+
+function getGradID(d){ //return the gradient id for a specific link
+    var target = d.target.name;
+    var source = d.source.name;
+    return "linkGrad-" + source.replaceAll(" ","") + "-" + target.replaceAll(" ","");
+}
+
+function creatGradient(defs,graph,color) //create definition of linear-gradient
 {
-    var formatNumber = d3.format(",.0f"), // zero decimal places
-    format = function(d) { return formatNumber(d); },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
-        var sankey = d3.sankey()
+   
+    function nodeColor(d) { 
+        return d.color = color(d.name.replace(/ .*/, ""));
+    }
+
+    // create gradients for the links
+
+    var grads = defs.selectAll("linearGradient")
+            .data(graph.links, getGradID)
+            .enter().append("linearGradient")
+            .attr("id", getGradID)
+            .attr("gradientUnits", "userSpaceOnUse");
+
+
+    grads.attr("x1", function(d){return d.source.x0;})
+        .attr("y1", function(d){return d.source.y0;})
+        .attr("x2", function(d){return d.target.x0;})
+        .attr("y2", function(d){return d.target.y0;});
+
+
+
+    grads.html("") //erase any existing <stop> elements on update
+        .append("stop") //stop from start end
+        .attr("offset", "0%")
+        .attr("stop-color", function(d){
+            return nodeColor( (+d.source.x0 <= +d.target.x0)? 
+                            d.source: d.target) ;
+        });
+
+    grads.append("stop") // //stop from end end
+        .attr("offset", "100%")
+        .attr("stop-color", function(d){
+            return nodeColor( (+d.source.x0 > +d.target.x0)? 
+                            d.source: d.target);
+        });
+
+}
+function drawSankey(choice) // function to draw initial sankey chart
+{
+   
+    var sankey = d3.sankey() // sankey function
         .nodeWidth(20)
         .nodePadding(20)
         .size([width , height+100]);
     var svg = d3.select(".sankey-chart svg g");
-    var path = sankey.links();
+    var path = sankey.links(); //path function
     d3.csv(`datasets/sankey${choice}.csv`).then(function(data) {
 
         //set up graph in same style as original example but empty
-        sankeydata = processData(data);
+        sankeydata = processData(data); //process data to be suitable for sankey diagram
         graph = sankey(sankeydata);
-      
+        var defs = svg.append("defs");
+        creatGradient(defs,graph,color);
+     
       // add in the links
         var link = svg.append("g").attr("class","link-path")
-        .selectAll(".link") 
-        .data(graph.links)
-        .enter().append("path")
-        .attr("class", "link")
-        .attr("d", d3.sankeyLinkHorizontal())
-        .attr("stroke-width", function(d) { return d.width; })
-        .style("stroke", function(d) { 
-            return "#3C2A21";
-        })  
+                        .selectAll(".link") 
+                        .data(graph.links)
+                        .enter().append("path")
+                        .attr("class", "link")
+                        .attr("d", d3.sankeyLinkHorizontal())
+                        .style("opacity", 3.5)
+                        .attr("stroke-width", function(d) { return d.width; })
+                        .style("stroke", function(d) { 
+                            return "url(#" + getGradID(d) + ")"; //linear-gradient
+                        })  
         
         // add the link titles
         link.append("title")
             .text(function(d) {
-                    
                     return `${ d.source.name} → ${d.target.name}\n ${format(d.value)}`;
                 });
         
         // add in the nodes
         var node = svg.append("g") .attr("class","node-path")
-        .selectAll(".node")
-        .data(graph.nodes)
-        .enter().append("g")
-        .attr("class", "node")
-        .on('click', function(e,d){
-            focusCountry(d.name,choice);
-        });
-        //.attr("fill","#C4DFDF"); ;
+                        .selectAll(".node")
+                        .data(graph.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .on('click', function(e,d){
+                            focusCountry(d.name,choice); //focus on a specific node for more detail when it gets clicked
+                        });
         
         // add the rectangles for the nodes
         node.append("rect")
-        .attr("x", function(d) { return d.x0; })
-        .attr("y", function(d) { return d.y0; })
-        .attr("height", function(d) { return d.y1 - d.y0; })
-        .attr("width", sankey.nodeWidth())
-        .style("fill", function(d) { 
-                return d.color = color(d.name.replace(/ .*/, "")); 
+            .attr("x", function(d) { return d.x0; })
+            .attr("y", function(d) { return d.y0; })
+            .attr("height", function(d) { return d.y1 - d.y0; })
+            .attr("width", sankey.nodeWidth())
+            .style("fill", function(d) { 
+                    return d.color = color(d.name.replace(/ .*/, "")); 
+                })
+            .style("stroke", function(d) { 
+                return d3.rgb(d.color).darker(2); 
+            
             })
-        .style("stroke", function(d) { 
-            return d3.rgb(d.color).darker(2); 
-           
-        })
         
-        node.append("title")
-        .text(function(d) { 
-            return d.name + "\n" + format(d.value); });
+        node.append("title") //append title for each node
+            .text(function(d) { 
+                return d.name + "\n" + format(d.value); });
         
-        // add in the title for the nodes
+        // add the title for the nodes
         node.append("text")
-        .attr("x", function(d) { return d.x0 +25; })
-        .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "start")
-        .text(function(d) { return d.name; })
-        .filter(function(d) { return d.x0 < width / 2; })
-        .attr("x", function(d) { return -95; })
+            .attr("x", function(d) { return d.x0 +25; })
+            .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "start")
+            .text(function(d) { return d.name; })
+            .filter(function(d) { return d.x0 < width / 2; }) //nodes that are source nodes
+            .attr("x", function(d) { return -95; });//move it to the left
       });
 }
 
-function processData(data)
+function processData(data) //to process input data to be suitable for sankey chart
 {
     sankeydata = {"nodes" : [], "links" : []};
       
@@ -138,7 +175,7 @@ function processData(data)
     return sankeydata;
 }
 
-function sortCountry(data,country)
+function sortCountry(data,country) //get data just for a specific node
 {
     sankeydata = {"nodes" : [], "links" : []};
     data.forEach(function (d) {
@@ -183,30 +220,34 @@ function sortCountry(data,country)
     return sankeydata;
 }
 
-function updateSankey(choice){
-    var formatNumber = d3.format(",.0f"), // zero decimal places
-    format = function(d) { return formatNumber(d); },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
-        var sankey = d3.sankey()
-        .nodeWidth(20)
-        .nodePadding(20)
-        .size([width , height+100]);
+function updateSankey(choice){ //update sankey based on one of the 3 periods
+    var sankey = d3.sankey()
+                    .nodeWidth(20)
+                    .nodePadding(20)
+                    .size([width , height+100]);
     var svg = d3.select(".sankey-chart svg g");
+    svg.selectAll("defs").remove(); //remove all old def for linear-gradient
+
     var path = sankey.links();
     d3.csv(`datasets/sankey${choice}.csv`).then(function(data){
         sankeydata = processData(data);
         graph = sankey(sankeydata);
+
+        var defs = svg.append("defs"); //create new linear-gradient
+        creatGradient(defs,graph,color)
+
         // add in the links
         var link = svg.selectAll("g .link")
-        .data(graph.links)
-        .transition()       
-        .ease(d3.easePoly)
-        .duration(1000)
-        .attr("d", d3.sankeyLinkHorizontal())
-        .attr("stroke-width", function(d) { return d.width; });  
+            .data(graph.links)
+            .transition()       
+            .ease(d3.easePoly)
+            .duration(1000)
+            .attr("d", d3.sankeyLinkHorizontal())
+            .style("stroke", function(d) { 
+                return "url(#" + getGradID(d) + ")";
+            })  
+            .style("opacity", 3.5)
+            .attr("stroke-width", function(d) { return d.width; });  
         
         // add the link titles
         link.selectAll("title")
@@ -216,73 +257,69 @@ function updateSankey(choice){
         
         // add in the nodes
         var node = svg.selectAll("g .node")
-        .data(graph.nodes)
-        .on('click', function(e,d){
-            focusCountry(d.name,choice);
-        });
+            .data(graph.nodes)
+            .on('click', function(e,d){
+                focusCountry(d.name,choice); //focus on a specific country when it gets clicked
+            });
        
         
         // add the rectangles for the nodes
         node.select("rect")
-        .transition()
-        .ease(d3.easePoly)
-        .duration(1000)
-        .attr("x", function(d) { return d.x0; })
-        .attr("y", function(d) { return d.y0; })
-        .attr("height", function(d) { return d.y1 - d.y0; })
-        .attr("width", sankey.nodeWidth())
-        .style("fill", function(d) { 
-                return d.color = color(d.name.replace(/ .*/, "")); })
-        .style("stroke", function(d) { 
-            return d3.rgb(d.color).darker(2); });
+            .transition()
+            .ease(d3.easePoly)
+            .duration(1000)
+            .attr("x", function(d) { return d.x0; })
+            .attr("y", function(d) { return d.y0; })
+            .attr("height", function(d) { return d.y1 - d.y0; })
+            .attr("width", sankey.nodeWidth())
+            .style("fill", function(d) { 
+                    return d.color = color(d.name.replace(/ .*/, "")); })
+            .style("stroke", function(d) { 
+                return d3.rgb(d.color).darker(2); });
         
-        node.select("title")
+        node.select("title") // add in the title for the nodes
             .text(function(d) { 
                 return d.name + "\n" + format(d.value); });
         
-        // add in the title for the nodes
+        // append name of the node
         node.select("text")
-        .transition()
-        .ease(d3.easePoly)
-        .duration(1000)
-        .attr("x", function(d) { return d.x0 +25; })
-        .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "start")
-        .text(function(d) { return d.name; })
-        .filter(function(d) { return d.x0 < width / 2; })
-        .attr("x", function(d) { return -95; })
+            .transition()
+            .ease(d3.easePoly)
+            .duration(1000)
+            .attr("x", function(d) { return d.x0 +25; })
+            .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "start")
+            .text(function(d) { return d.name; })
+            .filter(function(d) { return d.x0 < width / 2; }) //nodes that are the source nodes
+            .attr("x", function(d) { return -95; }) //move it to the left 
 
     })
 }
 
 
-function focusCountry(country,choice){
-    console.log(country)
-    var formatNumber = d3.format(",.0f"), // zero decimal places
-    format = function(d) { return formatNumber(d); },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
-        var sankey = d3.sankey()
+function focusCountry(country,choice){ //focus on a specific node
+    var sankey = d3.sankey()
         .nodeWidth(20)
         .nodePadding(20)
         .size([width , height+100]);
     var svg = d3.select(".sankey-chart svg g");
+    svg.selectAll("defs").remove(); //remove all old defs for linear-gradient
     var path = sankey.links();
     d3.csv(`datasets/sankey${choice}.csv`).then(function(data){
         sankeydata = sortCountry(data,country);
         graph = sankey(sankeydata);
-       
-        var link = svg.selectAll("g .link")
-        .data(graph.links);
+
+        var defs = svg.append("defs"); //create new linear-gradient color
+        creatGradient(defs,graph,color)
+
+        var link = svg.selectAll("g .link") //remove abundant links
+                        .data(graph.links);
         link.exit() 
             .remove();
-          // add in the nodes
-        var node = svg.selectAll("g .node")
-                        .data(graph.nodes);
 
+        var node = svg.selectAll("g .node") //remove abundant nodes
+                        .data(graph.nodes);
         node.exit()
             .remove();
 
@@ -291,6 +328,10 @@ function focusCountry(country,choice){
             .ease(d3.easePoly)
             .duration(1000)
             .attr("d", d3.sankeyLinkHorizontal())
+            .style("stroke", function(d) { 
+                return "url(#" + getGradID(d) + ")"; //gradient color
+            })  
+            .style("opacity", 3.5)
             .attr("stroke-width", function(d) { return d.width; });  
         
         // add the link titles
@@ -301,79 +342,79 @@ function focusCountry(country,choice){
                 });
         // add the rectangles for the nodes
         node.select("rect")
-        .transition()
-        .ease(d3.easePoly)
-        .duration(1000)
-        .attr("x", function(d) { return d.x0; })
-        .attr("y", function(d) { return d.y0; })
-        .attr("height", function(d) { return d.y1 - d.y0; })
-        .attr("width", sankey.nodeWidth())
-        .style("fill", function(d) { 
-                return d.color = color(d.name.replace(/ .*/, "")); })
-        .style("stroke", function(d) { 
-            return d3.rgb(d.color).darker(2); });
+            .transition()
+            .ease(d3.easePoly)
+            .duration(1000)
+            .attr("x", function(d) { return d.x0; })
+            .attr("y", function(d) { return d.y0; })
+            .attr("height", function(d) { return d.y1 - d.y0; })
+            .attr("width", sankey.nodeWidth())
+            .style("fill", function(d) { 
+                    return d.color = color(d.name.replace(/ .*/, "")); })
+            .style("stroke", function(d) { 
+                return d3.rgb(d.color).darker(2); });
         
-        node.select("title")
+        node.select("title") //add titles for nodes
             .text(function(d) { 
                 return d.name + "\n" + format(d.value); });
         
-        // add in the title for the nodes
+        // add names for the nodes
         node.select("text")
-        .transition()
-        .ease(d3.easePoly)
-        .duration(1000)
-        .attr("x", function(d) { return d.x0 +25; })
-        .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "start")
-        .text(function(d) { return d.name; })
-        .filter(function(d) { return d.x0 < width / 2; })
-        .attr("x", function(d) { return -95; })
+            .transition()
+            .ease(d3.easePoly)
+            .duration(1000)
+            .attr("x", function(d) { return d.x0 +25; })
+            .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "start")
+            .text(function(d) { return d.name; })
+            .filter(function(d) { return d.x0 < width / 2; })//nodes that are the source nodes
+            .attr("x", function(d) { return -95; }) //move it to the left
         var node = svg.selectAll("g .node")
                     .data(graph.nodes)
                     .on('click', function(e,d){
-                        restore(choice);
+                        restore(choice); //when a specific node is focused, if it gets clicked, the chart to return to the normal state which has all nodes
                     });
-       // add the rectangles for the nodes
     })
 }
 
 function restore(choice)
 {
-    console.log(choice);
-    var formatNumber = d3.format(",.0f"), // zero decimal places
-    format = function(d) { return formatNumber(d); },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
-    var margin = {top: 10, right: 10, bottom: 10, left: 10},
-        width = 600 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
-        var sankey = d3.sankey()
+    var sankey = d3.sankey()
         .nodeWidth(20)
         .nodePadding(20)
         .size([width , height+100]);
+
     var svg = d3.select(".sankey-chart svg .t");
+    svg.selectAll("defs").remove(); //remove all old defs for linear-gradient 
+
     var path = sankey.links();
     d3.csv(`datasets/sankey${choice}.csv`).then(function(data){
         sankeydata = processData(data);
         graph = sankey(sankeydata);
+        var defs = svg.append("defs"); //create new defs for gradient color
+        creatGradient(defs,graph,color)
 
         linkPath = svg.select(".link-path");
         var link = linkPath.selectAll(".link")
                         .data(graph.links);
-        link.enter()
+        link.enter() //append links that were removed while being focus
             .append("path")
             .attr("class", "link")
             .merge(link)
             .transition()      
             .ease(d3.easePoly)
             .duration(1000)
-            
             .attr("d", d3.sankeyLinkHorizontal())
+            .style("stroke", function(d) { 
+                return "url(#" + getGradID(d) + ")";
+            })  
+            .style("opacity", 3.5)
             .attr("stroke-width", function(d) { return d.width; });  
 
-        link.selectAll("title")
+        link.selectAll("title") // remove old titles
             .remove();
-        link = linkPath.selectAll(".link")
+        link = linkPath.selectAll(".link") //append new titles
             .data(graph.links);
         link.append("title")     
             .text(function(d) {
@@ -385,26 +426,27 @@ function restore(choice)
         var node = nodePath.selectAll(".node")
                             .data(graph.nodes);
 
-        node.enter()
+        node.enter() //append nodes that were removed while being focus
             .append("g")
             .attr("class", "node")
             .merge(node);
         
-        node.selectAll("rect")
+        node.selectAll("rect") //remove old elements
             .remove();
         node.selectAll("text")
             .remove();
         node.selectAll("title")
             .remove();
+
         node = nodePath.selectAll(".node")
                         .data(graph.nodes)
                         .on('click', function(e,d){
-                            focusCountry(d.name,choice);
+                            focusCountry(d.name,choice); //focus on a specific node when it gets clicked
                         });
        
                         
         
-        node.append("rect")
+        node.append("rect") //append new rect
             .transition()
             .ease(d3.easePoly)
             .duration(1000)
@@ -419,19 +461,19 @@ function restore(choice)
         
        
             
-        node.append("title")
+        node.append("title") //append new titles
             .text(function(d) { 
                 return d.name + "\n" + format(d.value); });
         
-        // add in the title for the nodes
+        // add names for the nodes
         node.append("text")
             .attr("x", function(d) { return d.x0 +25; })
             .attr("y", function(d) { return (d.y1 + d.y0) / 2; })
             .attr("dy", "0.35em")
             .attr("text-anchor", "start")
             .text(function(d) { return d.name; })
-            .filter(function(d) { return d.x0 < width / 2; })
-            .attr("x", function(d) { return -95; })
+            .filter(function(d) { return d.x0 < width / 2; }) //filter source nodes
+            .attr("x", function(d) { return -95; })//move it to the left
 
     })
 

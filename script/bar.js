@@ -1,50 +1,48 @@
+const color_arrive = "#2FC4B2";
+const color_depart = "#E14D2A";
+var formatNumber = d3.format(",.0f") // zero decimal places
+var format = function(d) { return formatNumber(d); };
+var w = 600;
+var h = 400;
+var padding = 70; 
 function initialiseBar()
 {
-    var w = 600;
-    var h = 400;
-    var padding = 60;
     var svg = d3.select(".barChart")
                 .append("svg")
                 .attr("width",w +100)
                 .attr("height",h + padding )
                 .attr("fill","grey");
-    drawBar("Australia",true);
+    drawBar("Australia");
 }
-// function Max(data){
-//     var arrive = [];
-//     for (const [key, value] of Object.entries(data)) {
-//         if(typeof value == 'number'){
-//             arrive.push(value);
-//         }
-//     }
-//     return d3.max(arrive,function(d) {return d;});
-// }
-function drawBar(state,initialize = false)
+function drawBar(state)
 {
-    var color_arrive = "#2FC4B2";
-    var color_depart = "#E14D2A";
-    var w = 600;
-    var h = 400;
-    var padding = 70; //padding
+  
     var svg = d3.select(".barchart").select("svg"); 
 
     title = document.querySelector(".title-bar")
     
     
-        title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
+    title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
+
+    var lst_year = []
+    for(let i =2004; i <=2021; i++)
+    {
+        lst_year.push(i)
+    }
 
     var xScale = d3.scaleBand() //xscale for the bar chart
+        .domain(d3.range(2004,2022))
         .rangeRound([0,w])
         .paddingInner(0.2); //add padding
     var yScale = d3.scaleLinear() // yscale for the bar chart
         .range([0,h/3]);
-    if (state !=  "Australia"){
-        yScale.domain([0,200000]);
-    }
+      
+    var xAxis = d3.axisBottom().tickFormat(d3.format("d")).ticks(3).scale(xScale); // number of ticks on the axis
+    
     
 
     d3.csv("./datasets/state_arrival.csv").then(function(arrival){
-        arrival.forEach(function(d) {
+        arrival.forEach(function(d) { // parse integer from the data
             d.State = d.State;
             for(var i = 2004; i <=2021; i++ )
             {
@@ -52,8 +50,8 @@ function drawBar(state,initialize = false)
             }
             
         });
-        d3.csv("./datasets/state_departure.csv").then(function(departure){
-            departure.forEach(function(d) {
+        d3.csv("./datasets/state_departure.csv").then(function(departure){ //merge 2 files
+            departure.forEach(function(d) { // parse integer from the data
                 d.State = d.State;
                 for(var i = 2004; i <=2021; i++ )
                 {
@@ -61,41 +59,18 @@ function drawBar(state,initialize = false)
                 }
                 
             });
-            xScale.domain(d3.range(2022-2004));
             
-            var temp;
-            for(var i =0; i < arrival.length; i++){
-                if(arrival[i]["State"] == state){
-                    temp = arrival[i];
-                }
-            }
-            var arrive = [];
-            for (const [key, value] of Object.entries(temp)) {
-                if(typeof value == 'number'){
-                    arrive.push(value);
-                }
-            }   
-            for(var i =0; i < arrival.length; i++){
-                if(departure[i]["State"] == state){
-                    temp = departure[i];
-                }
-            }
+           
+            var arrive =  extractState(state, arrival);
 
-            var depart = [];
-            for (const [key, value] of Object.entries(temp)) {
-                if(typeof value == 'number'){
-                    depart.push(value);
-                }
-            }   
-            var axisPad = 6 
+            var depart =  extractState(state, departure);
             yScale.domain([0,d3.max(arrive,function(d) {return d;})]); 
-        dataset = Object.entries(temp).slice(0,18);
-        if(initialize){
+     
             var max = d3.max(arrive,function(d) {return d;});
-            var lst = []
+            var lst = [] //list to store the ticks of y-axis
             for(let i =-2; i <=4; i++){
                
-                    lst.push(Math.round((max/4)*i));
+                lst.push(Math.round((max/4)*i)); //push to make line grid
                 
                 svg.append("line") // line element
                     .attr("class","line halfMilMark")
@@ -107,25 +82,21 @@ function drawBar(state,initialize = false)
                     .attr('stroke-width', 1) // make horizontal tick thinner and lighter so that line paths can stand out
                     .attr('opacity', 0.5);
             }
-            svg.selectAll("text")
+
+            svg.selectAll("text")//append tick for y-axis
                 .data(lst)
                 .enter()
                 .append("text")
-                .attr("x", function(d){
-                    if(d ==0)
-                    {
-                        return 45;
-                    }
-                    return 0;
-                })
+                .attr("x", 75)
                 .attr("y", function(d){
                     return h - yScale(d) -h/2 ;
                 })
+                .attr("text-anchor", "end")
                 .text((d)=>{
-                    return d;
+                    return format(d);
                 })
 
-            svg.selectAll("rect") //append bars to the svg
+            svg.selectAll("rect") //bind bars to data
                 .data(arrive)
                 .enter()
                 .append("rect")
@@ -134,9 +105,9 @@ function drawBar(state,initialize = false)
                     return `Year: ${2004+i}\nArrival: ${d}`;
                 });
              
-            svg.selectAll("rect")
+            svg.selectAll("rect") //give attribute for arrive bar
                 .attr("x", function(d,i){
-                    return xScale(i) + padding;
+                    return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
                     return h -yScale(d) -h/2;
@@ -148,7 +119,7 @@ function drawBar(state,initialize = false)
                 });
                 
 
-            for(let i =0 ; i< depart.length; i++){
+            for(let i =0 ; i< depart.length; i++){ //use the for loop because already have the rect element
                 var rect = svg.append("rect")
                             .attr("class", "depart");
                 rect.append("title").text(() => {
@@ -156,7 +127,7 @@ function drawBar(state,initialize = false)
                     });
     
                 rect.attr("x", function(){
-                    return xScale(i) + padding;
+                    return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
                     return h/2 ;
@@ -168,7 +139,7 @@ function drawBar(state,initialize = false)
                 });
             }           
            
-            svg.append("rect")
+            svg.append("rect") //legend for arrive color
                 .attr("class","legend-arrive")
                 .attr("x", 20)
                 .attr("y", h -30)
@@ -176,7 +147,14 @@ function drawBar(state,initialize = false)
                 .attr("height",20)
                 .attr("fill",color_arrive);
 
-            svg.append("rect")
+            svg.append("text") //text legende for arrive
+                .attr("x", 44)
+                .attr("y", h-15)
+                .attr("font-weight",500)
+                .text("Arrival");
+
+
+            svg.append("rect") //legend for depart color
                 .attr("class","legend-depart")
                 .attr("x", 110)
                 .attr("y", h -30)
@@ -184,72 +162,96 @@ function drawBar(state,initialize = false)
                 .attr("height",20)
                 .attr("fill",color_depart);
 
-            svg.append("text")
-                .attr("x", 44)
-                .attr("y", h-15)
-                .attr("font-weight",500)
-                .text("Arrival");
-
-            svg.append("text")
+           
+            svg.append("text") //text legende for depart
                 .attr("x", 134)
                 .attr("y", h-15)
                 .attr("font-weight",500)
                 .text("Departure");
 
-            svg.append('text')
+            svg.append('text') //text for axis label
                 .attr('x', 0)
                 .attr("y", 30)
-                .text("People");
+                .text("Immigrants");
     
-           
+            svg.append("g") //append x-axis
+            .attr("class", "xAxis")
+            .attr("transform",`translate(${padding},${h-100})`)
+            .call(xAxis);
         }
-        else{
-            // d3.selectAll("line").remove();
+       
+        )
+    })
+}
+
+function updateBar(state)
+{
+    var svg = d3.select(".barchart").select("svg"); 
+
+    title = document.querySelector(".title-bar")
+    title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
+
+    var xScale = d3.scaleBand() //xscale for the bar chart
+        .domain(d3.range(2004,2022))
+        .rangeRound([0,w])
+        .paddingInner(0.2); //add padding
+    var yScale = d3.scaleLinear() // yscale for the bar chart
+        .range([0,h/3]);
+    
+
+    d3.csv("./datasets/state_arrival.csv").then(function(arrival){
+        arrival.forEach(function(d) { // parse integer from the data
+            d.State = d.State;
+            for(var i = 2004; i <=2021; i++ )
+            {
+                d[`${i}`] = parseInt( d[`${i}`]);
+            }
+            
+        });
+        d3.csv("./datasets/state_departure.csv").then(function(departure){ //merge 2 files
+            departure.forEach(function(d) { // parse integer from the data
+                d.State = d.State;
+                for(var i = 2004; i <=2021; i++ )
+                {
+                    d[`${i}`] = parseInt( d[`${i}`]);
+                }
+                
+            });
+            
+           
+            var arrive =  extractState(state, arrival);
+            var depart =  extractState(state, departure);
+
+            yScale.domain([0,d3.max(arrive,function(d) {return d;})]); 
+
             var max = d3.max(arrive,function(d) {return d;});
-            var lines  = [-2,-1,0,1,2,3,4] 
-            var lst = []
-            svg.selectAll(".line") // line element
-                .data(lines)
-                //.attr("class","line halfMilMark")
-                .attr("x1",padding)
-                .attr("y1",function(d,i){
-                    return h - yScale((max/4) *d) -h/2
-                }  )
-                .attr("x2",w + padding) // push to the right
-                .attr("y2",function(d){
-                    return h - yScale((max/4) *d) -h/2
-                } );
+            var lst = [] //list to store the ticks of y-axis
             for(let i =-2; i <=4; i++){
                
-                    lst.push((max/4)*i);
+                    lst.push((max/4)*i); //make 6 ticks for the y-axis
             }
-            console.log(lst)
-            svg.selectAll("text")
+            svg.selectAll("text") //append tick for the y-axis
                 .data(lst)
                 .transition()
                 .ease(d3.easePoly)
                 .duration(1000)
-                .attr("x", function(d){
-                    if(d ==0)
-                    {
-                        return 45;
-                    }
-                    return 0;
-                })
+                .attr("x",75)
+                .attr("text-anchor", "end")
                 .attr("y", function(d){
                     return h - yScale(d) -h/2 ;
                 })
+                
                 .text((d)=>{
-                    return Math.round(d);
+                    return format(d);
                 })
             
-            svg.selectAll("rect")
+            svg.selectAll("rect") //update arrive bars
                 .data(arrive)
                 .transition()
                 .ease(d3.easePoly)
                 .duration(1000)
                 .attr("x", function(d,i){
-                    return xScale(i) + padding;
+                    return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
                     return h -yScale(d) -h/2;
@@ -259,7 +261,7 @@ function drawBar(state,initialize = false)
                 .attr("height", function(d){
                     return yScale(d);
                 })
-            svg.selectAll(".arrive title")
+            svg.selectAll(".arrive title") //update arrive title
                 .data(arrive)
                 .text((d,i) => {
                     console.log(d);
@@ -267,13 +269,13 @@ function drawBar(state,initialize = false)
                 });
             
 
-            svg.selectAll(".depart")
+            svg.selectAll(".depart") //update depart bars
                 .data(depart)
                 .transition()
                 .ease(d3.easePoly)
                 .duration(1000)
                 .attr("x", function(d,i){
-                    return xScale(i) + padding;
+                    return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
                     return h/2;
@@ -284,13 +286,29 @@ function drawBar(state,initialize = false)
                     return yScale(d);
                 })
 
-            svg.selectAll(".depart title")
+            svg.selectAll(".depart title") //update depart title
                 .data(depart)
                 .text((d,i) => {
                     return `Year: ${2004+i}\nDeparture: ${d}`;
                 });
            
         }
-        })
+        )
     })
+}
+function extractState(state, data) //extract data based on a state
+{
+    var temp;
+    for(var i =0; i < data.length; i++){ //extract value based on state from data from the arrival file
+        if(data[i]["State"] == state){
+            temp = data[i];
+        }
+    } 
+    var result = []; //use a list to store the data
+    for (const [key, value] of Object.entries(temp)) {
+        if(typeof value == 'number'){
+            result.push(value);
+        }
+    }   
+    return result;
 }
