@@ -146,11 +146,15 @@ function processData(data) //to process input data to be suitable for sankey cha
     sankeydata = {"nodes" : [], "links" : []};
       
     data.forEach(function (d) {
-        sankeydata.nodes.push({ "name": d.source });
-        sankeydata.nodes.push({ "name": d.target });
-        sankeydata.links.push({ "source": d.source,
-                            "target": d.target,
-                            "value": +d.value });
+        var value = parseInt(d.value);
+        if(value >0) //abort any link that is negative
+        {
+            sankeydata.nodes.push({ "name": d.source });
+            sankeydata.nodes.push({ "name": d.target });
+            sankeydata.links.push({ "source": d.source,
+                                "target": d.target,
+                                "value": +d.value });    
+        }
         });
     
     // return only the distinct / unique nodes
@@ -179,7 +183,9 @@ function sortCountry(data,country) //get data just for a specific node
 {
     sankeydata = {"nodes" : [], "links" : []};
     data.forEach(function (d) {
-       
+       var value = parseInt(d.value);
+       if(value >0) //abort any link that is negative
+       {
         if(d.source == country)
         {
             sankeydata.nodes.push({ "name": d.source });
@@ -196,6 +202,8 @@ function sortCountry(data,country) //get data just for a specific node
                                 "target": d.target,
                                 "value": +d.value });
         }
+       }
+       
         });
     
     // return only the distinct / unique nodes

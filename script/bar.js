@@ -40,8 +40,6 @@ function initialiseBar()
                 .attr("fill","grey");
     
     drawBar("Australia");
-      
-    
     
 }
 function drawBar(state)
