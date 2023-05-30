@@ -1,5 +1,5 @@
-var w = 600;
-var h = 400;
+var w_map = 600*0.9;
+var h_map = 400;
 
 function initializeMap(){ // initialize the choropleth
     var zoom = d3.zoom().scaleExtent([1, 2]) //limite the maximum rate can be zoommed
@@ -12,12 +12,12 @@ function initializeMap(){ // initialize the choropleth
     
     var svg = d3.select(".map") //make a new svg element
                 .append("svg")
-                .attr("width",w)
-                .attr("height",h+100)
+                .attr("width",w_map)
+                .attr("height",h_map+100)
                 .append("g") .attr("class","t")
                 .attr("transform", 
                         `translate(${0},${0})`)
-                .attr("viewBox", [0, 0, w , h])
+                .attr("viewBox", [0, 0, w_map , h_map])
                 .call(zoom)
                 .attr("fill","grey");
    
@@ -26,7 +26,7 @@ function initializeMap(){ // initialize the choropleth
               d3.select('.map svg .t')
                 .transition()
                 .duration(700)   
-                .call(zoom.transform, d3.zoomIdentity .translate(w/2 -140, h/2 -150) .scale(1).translate(-145,-36.5)); 
+                .call(zoom.transform, d3.zoomIdentity .translate(w_map/2 -120, h_map/2 -150) .scale(1).translate(-145,-36.5)); 
             }) 
     drawMap("2021","Arrival", true);
 }  
@@ -36,8 +36,8 @@ function drawMap(year,type,initialize = false) //update the choropleth
     
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w/2  + 125,h/2 + 75]) // move to the center
-                    .scale(500);
+                    .translate([w_map/2  + 80,h_map/2 + 90]) // move to the center
+                    .scale(450);
     var path = d3.geoPath()
                 .projection(projection); //project 
     var svg = d3.select(".map").select("svg").select(".t"); 
@@ -162,8 +162,8 @@ function createColorScale(color,h) //color legend for the choropleth
     svg.append("rect") //append a rect
         .attr("id", "colorScale")
         .attr("x", 20)
-        .attr("y", h )
-        .attr("width", 200)
+        .attr("y", h_map )
+        .attr("width", 170)
         .attr("height", 20)
         .attr("style", "outline: thin solid black;");
 
@@ -181,8 +181,8 @@ function createColorScale(color,h) //color legend for the choropleth
         .style("opacity", 1.5)
         .style("fill", "url(#linear-gradient-map)"); //apply gradient to the rect
 
-    svg.append("text").text("2,000").attr("x", 20).attr("y", h - 7);
-    svg.append("text").text("200,000").attr("x", 160).attr("y", h - 7);
+    svg.append("text").text("2,000").attr("x", 20).attr("y", h_map - 7);
+    svg.append("text").text("200,000").attr("x", 140).attr("y", h_map - 7);
 
 }
 

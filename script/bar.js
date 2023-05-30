@@ -2,8 +2,8 @@ const color_arrive = "#2FC4B2";
 const color_depart = "#E14D2A";
 var formatNumber = d3.format(",.0f") // zero decimal places
 var format = function(d) { return formatNumber(d); };
-var w = 600;
-var h = 400;
+var w_bar = 600*0.9;
+var h_bar = 400;
 var padding = 70; 
 function focusBar() //to make a bar look outstanding
 {
@@ -35,8 +35,8 @@ function initialiseBar()
 {
     var svg = d3.select(".barChart")
                 .append("svg")
-                .attr("width",w +100)
-                .attr("height",h + padding )
+                .attr("width",w_bar +100)
+                .attr("height",h_bar + padding )
                 .attr("fill","grey");
     
     drawBar("Australia");
@@ -55,12 +55,12 @@ function drawBar(state)
 
     var xScale = d3.scaleBand() //xscale for the bar chart
         .domain(d3.range(2004,2022))
-        .rangeRound([0,w])
+        .rangeRound([0,w_bar])
         .paddingInner(0.2); //add padding
     var yScale = d3.scaleLinear() // yscale for the bar chart
-        .range([0,h/3]);
+        .range([0,h_bar/3]);
       
-    var xAxis = d3.axisBottom().tickFormat(d3.format("d")).ticks(3).scale(xScale); // number of ticks on the axis
+    var xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).ticks(3); // number of ticks on the axis
     
     
 
@@ -98,9 +98,9 @@ function drawBar(state)
                 svg.append("line") // line element
                     .attr("class","line ")
                     .attr("x1",padding)
-                    .attr("y1", h - yScale((max/4)*i) -h/2 )
-                    .attr("x2",w + padding) // push to the right
-                    .attr("y2", h - yScale((max/4)*i) -h/2 )
+                    .attr("y1", h_bar - yScale((max/4)*i) -h_bar/2 )
+                    .attr("x2",w_bar + padding) // push to the right
+                    .attr("y2", h_bar - yScale((max/4)*i) -h_bar/2 )
                     .attr('stroke', '#A9A9A9')
                     .attr('stroke-width', 1) // make horizontal tick thinner and lighter so that line paths can stand out
                     .attr('opacity', 0.5);
@@ -112,7 +112,7 @@ function drawBar(state)
                 .append("text")
                 .attr("x", 75)
                 .attr("y", function(d){
-                    return h - yScale(d) -h/2 ;
+                    return h_bar - yScale(d) -h_bar/2 ;
                 })
                 .attr("text-anchor", "end")
                 .text((d)=>{
@@ -133,7 +133,7 @@ function drawBar(state)
                     return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
-                    return h -yScale(d) -h/2;
+                    return h_bar -yScale(d) -h_bar/2;
                 })
                 .attr("fill",color_arrive)
                 .attr("width", xScale.bandwidth())
@@ -153,7 +153,7 @@ function drawBar(state)
                     return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
-                    return h/2 ;
+                    return h_bar/2 ;
                 })
                 .attr("fill",color_depart)
                 .attr("width", xScale.bandwidth())
@@ -165,14 +165,14 @@ function drawBar(state)
             svg.append("rect") //legend for arrive color
                 .attr("class","legend-arrive")
                 .attr("x", 20)
-                .attr("y", h -30)
+                .attr("y", h_bar -30)
                 .attr("width",20)
                 .attr("height",20)
                 .attr("fill",color_arrive);
 
             svg.append("text") //text legende for arrive
                 .attr("x", 44)
-                .attr("y", h-15)
+                .attr("y", h_bar-15)
                 .attr("font-weight",500)
                 .text("Arrival");
 
@@ -180,7 +180,7 @@ function drawBar(state)
             svg.append("rect") //legend for depart color
                 .attr("class","legend-depart")
                 .attr("x", 110)
-                .attr("y", h -30)
+                .attr("y", h_bar -30)
                 .attr("width",20)
                 .attr("height",20)
                 .attr("fill",color_depart);
@@ -188,7 +188,7 @@ function drawBar(state)
            
             svg.append("text") //text legende for depart
                 .attr("x", 134)
-                .attr("y", h-15)
+                .attr("y", h_bar-15)
                 .attr("font-weight",500)
                 .text("Departure");
 
@@ -199,7 +199,7 @@ function drawBar(state)
     
             svg.append("g") //append x-axis
             .attr("class", "xAxis")
-            .attr("transform",`translate(${padding},${h-100})`)
+            .attr("transform",`translate(${padding},${h_bar-80})`)
             .call(xAxis);
 
             focusBar();
@@ -218,10 +218,10 @@ function updateBar(state)
 
     var xScale = d3.scaleBand() //xscale for the bar chart
         .domain(d3.range(2004,2022))
-        .rangeRound([0,w])
+        .rangeRound([0,w_bar])
         .paddingInner(0.2); //add padding
     var yScale = d3.scaleLinear() // yscale for the bar chart
-        .range([0,h/3]);
+        .range([0,h_bar/3]);
     
 
     d3.csv("./datasets/state_arrival.csv").then(function(arrival){
@@ -263,7 +263,7 @@ function updateBar(state)
                 .attr("x",75)
                 .attr("text-anchor", "end")
                 .attr("y", function(d){
-                    return h - yScale(d) -h/2 ;
+                    return h_bar - yScale(d) -h_bar/2 ;
                 })
                 
                 .text((d)=>{
@@ -279,7 +279,7 @@ function updateBar(state)
                     return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
-                    return h -yScale(d) -h/2;
+                    return h_bar -yScale(d) -h_bar/2;
                 })
                 .attr("fill",color_arrive)
                 .attr("width", xScale.bandwidth())
@@ -303,7 +303,7 @@ function updateBar(state)
                     return xScale(i+2004) + padding;
                 })
                 .attr("y", function(d){
-                    return h/2;
+                    return h_bar/2;
                 })
                 .attr("fill",color_depart)
                 .attr("width", xScale.bandwidth())
