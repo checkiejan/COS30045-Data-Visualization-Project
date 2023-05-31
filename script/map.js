@@ -1,4 +1,4 @@
-var w_map = 600*0.9;
+var w_map = 600;
 var h_map = 400;
 
 function initializeMap(){ // initialize the choropleth
@@ -26,7 +26,7 @@ function initializeMap(){ // initialize the choropleth
               d3.select('.map svg .t')
                 .transition()
                 .duration(700)   
-                .call(zoom.transform, d3.zoomIdentity .translate(w_map/2 -120, h_map/2 -150) .scale(1).translate(-145,-36.5)); 
+                .call(zoom.transform, d3.zoomIdentity .translate(w_map/2 -155, h_map/2 -163) .scale(1).translate(-145,-36.5)); 
             }) 
     drawMap("2021","Arrival", true);
 }  
@@ -36,7 +36,7 @@ function drawMap(year,type,initialize = false) //update the choropleth
     
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w_map/2  + 80,h_map/2 + 90]) // move to the center
+                    .translate([w_map/2  + 50,h_map/2 + 90]) // move to the center
                     .scale(450);
     var path = d3.geoPath()
                 .projection(projection); //project 

@@ -1,7 +1,7 @@
 const color_arrive = "#2FC4B2";
 const color_depart = "#E14D2A";
-var formatNumber = d3.format(",.0f") // zero decimal places
-var format = function(d) { return formatNumber(d); };
+var formatNumber_bar = d3.format(".2s") // zero decimal places
+var format_bar = function(d) { if(d==0)return "0k";return formatNumber_bar(d); };
 var w_bar = 600*0.9;
 var h_bar = 400;
 var padding = 70; 
@@ -50,7 +50,7 @@ function drawBar(state)
     title = document.querySelector(".title-bar")
     
     
-    title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
+    title.innerText = `Arrivals and Departures to ${state} from 2004 to 2021`;
 
 
     var xScale = d3.scaleBand() //xscale for the bar chart
@@ -116,7 +116,7 @@ function drawBar(state)
                 })
                 .attr("text-anchor", "end")
                 .text((d)=>{
-                    return format(d);
+                    return format_bar(d);
                 })
 
             svg.selectAll("rect") //bind bars to data
@@ -214,7 +214,7 @@ function updateBar(state)
     var svg = d3.select(".barchart").select("svg"); 
 
     title = document.querySelector(".title-bar")
-    title.innerText = `Arrival and Departure to ${state} from 2004 to 2021`;
+    title.innerText = `Arrivals and Departures to ${state} from 2004 to 2021`;
 
     var xScale = d3.scaleBand() //xscale for the bar chart
         .domain(d3.range(2004,2022))
@@ -267,7 +267,7 @@ function updateBar(state)
                 })
                 
                 .text((d)=>{
-                    return format(d);
+                    return format_bar(d);
                 })
             
             svg.selectAll("rect") //update arrive bars

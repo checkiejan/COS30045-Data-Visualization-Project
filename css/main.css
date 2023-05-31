@@ -67,7 +67,7 @@ h3{
     overflow: hidden;
 }
 .select-map{
-    float: right;
+    float: left;
     position: relative;
     top: 50%;
     transform: translate(-20%,200%);
@@ -116,3 +116,6 @@ h3{
     margin: auto;
     width: 70%;
 }
+
+
+

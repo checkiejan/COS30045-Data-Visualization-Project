@@ -38,13 +38,21 @@ function timelineUpdate(){
     yearLabel.innerText = document.querySelector("#year").value;
 }
 function firstChartUpdate(){ //update the choropleth
-    timelineUpdate();
+   
     method = document.querySelector('.select-map').value //get the method
     year = document.querySelector("#year"); //get the year selected
     mapTitle = document.querySelector(".title-map"); //update title
-    mapTitle.innerText = `${year.value} ${method} in Australia`;
+    if(method =="Arrivals")
+    {
+        mapTitle.innerText = `${method} to Australia in ${year.value}`;
+    }
+    else{
+        mapTitle.innerText = `${method} from Australia in ${year.value}`;
+    }
     drawMap( year.value,method); //re-draw the map
     focusBar();
+    timelineUpdate();
+
 }
 function sankeyUpdate(choice){ //update sankey chart based on the choice button
     button = document.querySelector(`.sankey-${choice}`);
@@ -77,7 +85,7 @@ function sankeyUpdate(choice){ //update sankey chart based on the choice button
 function LineChartUpdate(){ //update the line chart when user select different state
     title = document.querySelector(".title-line");
     state = document.querySelector('.select-state').value; 
-    title.innerText = `Total Arrival to ${state} based on types of visa holders from 2004 to 2021`; //update the new title
+    title.innerText = `Total Arrivals to ${state} based on types of visa holders from 2004 to 2021`; //update the new title
     updateLine(state); //update the line chart
 }
 
@@ -91,7 +99,14 @@ function init(){
         var inputText = event.target.value;
         var title = document.querySelector('.title-map');
         var year= document.querySelector("#year").value;
-        title.innerText = `${year} ${inputText} in Australia`;
+        if(inputText =="Arrivals")
+        {
+            console.log(inputText);
+            title.innerText = `${inputText}s to Australia in ${year}`;
+        }
+        else{
+            title.innerText = `${inputText}s from Australia in ${year}`;
+        }
         drawMap(`${year}`,inputText);
     }
     initializeMap();

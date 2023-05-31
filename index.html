@@ -29,12 +29,12 @@
             <div class = "visualisation container-fluid" style="--bs-columns: 10; --bs-gap: 1rem;">
                 <p class = "brief-vis ">Explore Australian migration rate statistics through our interactive heatmap and detailed bar charts. Click on a region to reveal the arrival and departure rates from 2004 to 2021 for that specific region. Click outside the heatmap to access statistics on the overall migration pattern in Australia.</p>
                 <select class = "select-map">
-                    <option value ="Arrival">Arrival</option>
-                    <option value ="Departure" >Departure</option>
+                    <option value ="Arrival">Arrivals</option>
+                    <option value ="Departure" >Departures</option>
                 </select>
                 <div class="row">
                     <div class = "col-5 chart">
-                        <h3 class = "title-map">2021 Arrival in Australia</h3>
+                        <h3 class = "title-map">Arrivals to Australia in 2021</h3>
                         <div class="map">
                         
                         </div>
@@ -51,7 +51,7 @@
                     <p class="col-auto py-0 px-2 m-0 leftBorder">2004</p>
                     <input oninput="timelineUpdate()" onchange="firstChartUpdate()" type="range" name="year" id="year" class="col p-0 m-0" min="2004" max="2021" value="2021">
                     <p class="col-auto py-0 px-2 m-0 rightBorder">2021</p>
-                    <p id="yearLabel" class="col-auto py-0 px-3 m-0">2020</p>
+                    <p id="yearLabel" class="col-auto py-0 px-3 m-0">2021</p>
                 </section>
             </div>
         </section>
@@ -88,7 +88,7 @@
                     <option value ="Western Australia">Western Australia</option>
                 </select>
                 <div class = "row chart">
-                    <h3 class = "title-line">Total Arrival to Australia based on types of visa holders from 2004 to 2009</h3>
+                    <h3 class = "title-line">Total Arrivals to Australia based on types of visa holders from 2004 to 2009</h3>
                     
                     <div class="linechart">
                         
