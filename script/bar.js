@@ -1,6 +1,6 @@
 const color_arrive = "#2FC4B2";
 const color_depart = "#E14D2A";
-var formatNumber_bar = d3.format(".2s") // zero decimal places
+var formatNumber_bar = d3.format(".4s") // zero decimal places
 var format_bar = function(d) { if(d==0)return "0k";return formatNumber_bar(d); };
 var w_bar = 600*0.9;
 var h_bar = 400;
