@@ -174,7 +174,7 @@ function drawBar(state)
                 .attr("x", 44)
                 .attr("y", h_bar-15)
                 .attr("font-weight",500)
-                .text("Arrival");
+                .text("Arrivals");
 
 
             svg.append("rect") //legend for depart color
@@ -190,7 +190,7 @@ function drawBar(state)
                 .attr("x", 134)
                 .attr("y", h_bar-15)
                 .attr("font-weight",500)
-                .text("Departure");
+                .text("Departures");
 
             svg.append('text') //text for axis label
                 .attr('x', 0)

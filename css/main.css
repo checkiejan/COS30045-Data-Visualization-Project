@@ -58,6 +58,7 @@
 .brief-vis{
     text-align: center;
     margin: auto;
+    margin-bottom: 20px;
     width: 70%;
 }
 h3{
@@ -118,4 +119,6 @@ h3{
 }
 
 
-
+#yearLabel{
+    font-weight: bold;
+}
