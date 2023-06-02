@@ -99,12 +99,12 @@ function init(){
         var inputText = event.target.value;
         var title = document.querySelector('.title-map');
         var year= document.querySelector("#year").value;
-        if(inputText =="Arrivals")
+        if(inputText =="Arrival")
         {
-            console.log(inputText);
             title.innerText = `${inputText}s to Australia in ${year}`;
         }
         else{
+           
             title.innerText = `${inputText}s from Australia in ${year}`;
         }
         drawMap(`${year}`,inputText);
