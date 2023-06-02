@@ -157,6 +157,11 @@ function drawLine(state)
                   .attr('id', 'tooltip')
                   .style('position', 'absolute')
                   .style("background-color", "#F8EAD8")
+                  .style("border", "solid")
+                  .style("border-width", "1px")
+                  .style("border-radius", "5px")
+                  .style("padding", "5px")
+
                   .style('padding_line', 6)
                   .style('display', 'none');
 
