@@ -258,7 +258,7 @@ function updateSankey(choice){ //update sankey based on one of the 3 periods
             .attr("stroke-width", function(d) { return d.width; });  
         
         // add the link titles
-        link.selectAll("title")
+        link.select("title")
             .text(function(d) {
                     return `${ d.source.name} → ${d.target.name}\n ${format(d.value)}`;
                 });
