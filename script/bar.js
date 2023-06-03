@@ -2,14 +2,13 @@ const color_arrive = "#2FC4B2";
 const color_depart = "#E14D2A";
 var formatNumber_bar = d3.format(".3s") // zero decimal places
 var format_bar = function(d) { if(d==0)return "0k";return formatNumber_bar(d); };
-var w_bar = 600*0.9;
+var w_bar = 600*0.85;
 var h_bar = 400;
 var padding = 70; 
 function focusBar() //to make a bar look outstanding
 {
     var year = parseInt(document.querySelector("#year").value);
     var index = year -2004; //get the order of the bar
-    console.log(index);
     d3.selectAll(".barchart svg rect") //delete all style for other bars
         .attr("style",null);
     d3.selectAll(".barchart svg .depart") //focus on the needed bar

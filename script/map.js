@@ -5,8 +5,20 @@ function initializeMap(){ // initialize the choropleth
     var zoom = d3.zoom().scaleExtent([1, 2]) //limite the maximum rate can be zoommed
             .translateExtent([[-600, -500], [1200, 1200]]).on('zoom', handleZoom); //limit the range can be draged
     function handleZoom(e) { //function to handle zoom
+      
         d3.select('.map svg .t')
             .attr('transform', e.transform);
+        if(e.transform.k !=1)
+        {
+            d3.select('.map svg')
+            .style("border", "solid")
+            .style("border-width", "1px");
+
+        }
+        else{
+            console.log(e.transform);
+            d3.select('.map svg').attr("style", null);
+        }
         
     }       
     
@@ -22,11 +34,14 @@ function initializeMap(){ // initialize the choropleth
                 .attr("fill","grey");
    
     
-    svg.on("mouseleave", function(){ //when mouse leave the map, reset to normal zoom
-              d3.select('.map svg .t')
+    d3.select(".map").select("svg").on("mouseleave", function(){ //when mouse leave the map, reset to normal zoom
+           
+             d3.select('.map svg .t')
                 .transition()
                 .duration(700)   
                 .call(zoom.transform, d3.zoomIdentity .translate(w_map/2 -155, h_map/2 -163) .scale(1).translate(-145,-36.5)); 
+
+            
             }) 
     drawMap("2021","Arrival", true);
 }  
