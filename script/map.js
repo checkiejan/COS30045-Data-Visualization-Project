@@ -8,15 +8,15 @@ function initializeMap(){ // initialize the choropleth
       
         d3.select('.map svg .t')
             .attr('transform', e.transform);
-        if(e.transform.k !=1)
+        if(e.transform.k !=1) // to check when users are zooming in
         {
-            d3.select('.map svg')
+            d3.select('.map svg') // make a border so that they can easily see teh boundary
             .style("border", "solid")
             .style("border-width", "1px");
 
         }
         else{
-            console.log(e.transform);
+            console.log(e.transform); //remove border
             d3.select('.map svg').attr("style", null);
         }
         
