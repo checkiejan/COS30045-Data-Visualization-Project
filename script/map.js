@@ -51,7 +51,7 @@ function drawMap(year,type,initialize = false) //update the choropleth
     
     var projection = d3.geoMercator() //geoMercator projection
                     .center([145,-36.5])
-                    .translate([w_map/2  + 50,h_map/2 + 90]) // move to the center
+                    .translate([w_map/2  + 95,h_map/2 + 90]) // move to the center
                     .scale(450);
     var path = d3.geoPath()
                 .projection(projection); //project 
