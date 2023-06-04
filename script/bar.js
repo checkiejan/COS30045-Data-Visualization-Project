@@ -34,7 +34,7 @@ function initialiseBar()
 {
     var svg = d3.select(".barChart")
                 .append("svg")
-                .attr("width",w_bar +100)
+                .attr("width",w_bar +105)
                 .attr("height",h_bar + padding )
                 .attr("fill","grey");
     
