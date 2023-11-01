@@ -1,6 +1,6 @@
-#COS30045-Data-Visualization-Project
+# COS30045-Data-Visualization-Project
 
-##Australian Migration Patterns and Trends Data Visualization
+## Australian Migration Patterns and Trends Data Visualization
 
 Welcome to the GitHub repository for the Australian Migration Patterns and Trends data visualization project. This project aims to explore and visualize migration patterns and trends in Australia using interactive data visualizations.
 
